@@ -1,4 +1,7 @@
-﻿namespace Productivity.Shared.Utility.ModelHelpers
+﻿using Productivity.Shared.Models.Utility;
+using System.Linq.Dynamic.Core;
+
+namespace Productivity.Shared.Utility.ModelHelpers
 {
     public static class QueryParamHelper
     {

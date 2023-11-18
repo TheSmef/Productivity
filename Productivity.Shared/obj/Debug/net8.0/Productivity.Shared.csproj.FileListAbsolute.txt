@@ -21,3 +21,16 @@ C:\Users\User\Desktop\Productivity\Productivity.Shared\obj\Debug\net8.0\Producti
 C:\Users\User\Desktop\Productivity\Productivity.Shared\obj\Debug\net8.0\refint\Productivity.Shared.dll
 C:\Users\User\Desktop\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.pdb
 C:\Users\User\Desktop\Productivity\Productivity.Shared\obj\Debug\net8.0\ref\Productivity.Shared.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\bin\Debug\net8.0\Productivity.Shared.deps.json
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\bin\Debug\net8.0\Productivity.Shared.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\bin\Debug\net8.0\Productivity.Shared.pdb
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.csproj.AssemblyReference.cache
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.AssemblyInfoInputs.cache
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.AssemblyInfo.cs
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.csproj.CoreCompileInputs.cache
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.sourcelink.json
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\refint\Productivity.Shared.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\Productivity.Shared.pdb
+C:\Users\User\Documents\GitHub\Productivity\Productivity.Shared\obj\Debug\net8.0\ref\Productivity.Shared.dll
