@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Productivity.Shared.Models.DTO.GetModels.StatsModel.SingleModel
+namespace Productivity.Shared.Models.DTO.GetModels.StatsModels.SingleModels
 {
-    public class CultureStatsModel
+    public class RegionStatsModel
     {
-        public string Culture { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
         public decimal Productivity { get; set; } = decimal.Zero;
     }
 }

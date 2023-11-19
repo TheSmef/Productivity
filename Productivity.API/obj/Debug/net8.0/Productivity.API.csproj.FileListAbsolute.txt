@@ -286,3 +286,8 @@ C:\Users\User\Documents\GitHub\Productivity\Productivity.API\obj\Debug\net8.0\re
 C:\Users\User\Documents\GitHub\Productivity\Productivity.API\obj\Debug\net8.0\Productivity.API.pdb
 C:\Users\User\Documents\GitHub\Productivity\Productivity.API\obj\Debug\net8.0\Productivity.API.genruntimeconfig.cache
 C:\Users\User\Documents\GitHub\Productivity\Productivity.API\obj\Debug\net8.0\ref\Productivity.API.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Scrutor.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll

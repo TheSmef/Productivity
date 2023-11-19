@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Productivity.Shared.Models.DTO.GetModels.StatsModel.SingleModel
+namespace Productivity.Shared.Models.DTO.GetModels.StatsModels.SingleModels
 {
     public class ProductivityStatsModel
     {
