@@ -26,10 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\AuthControllers\" />
     <Folder Include="Controllers\DataControllers\" />
     <Folder Include="Controllers\StatsControllers\" />
-    <Folder Include="Services\" />
+    <Folder Include="Services\ExportServices\" />
+    <Folder Include="Services\Messaging\" />
   </ItemGroup>
 
   <ItemGroup>

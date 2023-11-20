@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Context;
 using Productivity.API.Data.Repositories.Interfaces;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Utility.ModelHelpers;
+using System.Threading;
 
 namespace Productivity.API.Data.Repositories
 {
@@ -30,8 +32,14 @@ namespace Productivity.API.Data.Repositories
 
         public async Task<Token?> GetItem(Guid Id, CancellationToken cancellationToken)
         {
-            return await _context.Tokens
+            return await _context.Tokens.Include(x => x.Account)
                 .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+        }
+
+        public async Task<Token?> GetItem(string token, CancellationToken cancellationToken)
+        {
+            return await _context.Tokens.Include(x => x.Account)
+                .FirstOrDefaultAsync(x => x.TokenStr == token, cancellationToken);
         }
 
         public IQueryable<Token> GetItems(QuerySupporter specification, CancellationToken cancellationToken)

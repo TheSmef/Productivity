@@ -5,6 +5,8 @@ using Microsoft.OpenApi.Models;
 using Productivity.API.Data.Context;
 using Productivity.API.Data.Repositories;
 using Productivity.API.Data.Repositories.Interfaces;
+using Productivity.API.Services.Authentication;
+using Productivity.API.Services.Authentication.Base;
 using Productivity.Shared.Utility.AutoMapper;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
@@ -55,6 +57,8 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 builder.Services.AddScoped<ICultureRepository, CultureRepository>();
 builder.Services.AddScoped<IProductivityRepository, ProductivityRepository>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 var app = builder.Build();
