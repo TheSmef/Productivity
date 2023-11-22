@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Productivity.API.Data.Context.Constants;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Security;
 using System.Data;
 using System.Diagnostics.Contracts;
+using System.Xml.Linq;
 
 namespace Productivity.API.Data.Context
 {
@@ -26,14 +28,22 @@ namespace Productivity.API.Data.Context
 
             modelBuilder.Entity<Token>().HasOne(e => e.Account).WithMany().OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Token>().HasIndex(e => e.TokenStr).IsUnique();
+            modelBuilder.Entity<Token>().HasIndex(e => e.TokenStr, 
+                ContextConstants.TokenUNIndex).IsUnique();
+            modelBuilder.Entity<Shared.Models.Entity.Productivity>()
+                .HasIndex(new[] { "CultureId", "RegionId", "Year" },
+                ContextConstants.ProductivityUNIndex).IsUnique();
 
-            modelBuilder.Entity<Account>().HasIndex(u => u.Email).IsUnique();
-            modelBuilder.Entity<Account>().HasIndex(u => u.Login).IsUnique();
+            modelBuilder.Entity<Account>().HasIndex(u => u.Email,
+                ContextConstants.AccountEmailUNIndex).IsUnique();
+            modelBuilder.Entity<Account>().HasIndex(u => u.Login, 
+                ContextConstants.AccountLoginUNIndex).IsUnique();
             modelBuilder.Entity<Account>().ToTable(e => e.HasCheckConstraint("CH_Email_Account", "Email like '%@%.%'"));
 
-            modelBuilder.Entity<Culture>().HasIndex(u => u.Name).IsUnique();
-            modelBuilder.Entity<Region>().HasIndex(u => u.Name).IsUnique();
+            modelBuilder.Entity<Culture>().HasIndex(u => u.Name, 
+                ContextConstants.CultureUNIndex).IsUnique();
+            modelBuilder.Entity<Region>().HasIndex(u => u.Name, 
+                ContextConstants.RegionUNIndex).IsUnique();
 
             modelBuilder.Entity<Culture>().ToTable(e => e.HasCheckConstraint("CH_CostToPlant", "CostToPlant > 0"));
             modelBuilder.Entity<Culture>().ToTable(e => e.HasCheckConstraint("CH_PriceToSell", "PriceToSell > 0"));

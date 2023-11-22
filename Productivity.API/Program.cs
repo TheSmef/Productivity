@@ -7,6 +7,8 @@ using Productivity.API.Data.Repositories;
 using Productivity.API.Data.Repositories.Interfaces;
 using Productivity.API.Services.Authentication;
 using Productivity.API.Services.Authentication.Base;
+using Productivity.API.Services.Data;
+using Productivity.API.Services.Data.Interfaces;
 using Productivity.Shared.Utility.AutoMapper;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
@@ -48,6 +50,8 @@ builder.Services.AddAuthentication(
             };
     });
 
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
 builder.Services.AddDbContextPool<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection"))
 );
@@ -59,7 +63,8 @@ builder.Services.AddScoped<ICultureRepository, CultureRepository>();
 builder.Services.AddScoped<IProductivityRepository, ProductivityRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.AddScoped<IRegionService, RegionService>();
+builder.Services.AddScoped<ICultureService, CultureService>();
 
 var app = builder.Build();
 

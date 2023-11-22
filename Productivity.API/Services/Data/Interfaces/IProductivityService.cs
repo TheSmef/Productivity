@@ -4,5 +4,5 @@ using Productivity.Shared.Models.DTO.PostModels.DataModels;
 
 namespace Productivity.API.Services.Data.Interfaces
 {
-    public interface IProductivityService : IBaseDataService<ProductivityDTO, ProductiviryPostDTO> { }
+    public interface IProductivityService : IBaseDataService<ProductivityDTO, ProductivityPostDTO> { }
 }

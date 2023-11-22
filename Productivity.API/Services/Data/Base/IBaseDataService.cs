@@ -10,7 +10,7 @@ namespace Productivity.API.Services.Data.Base
         public Task AddItem(TPostDTO record, CancellationToken cancellationToken);
         public Task RemoveItem(Guid Id, CancellationToken cancellationToken);
         public Task<CollectionDTO<TGetDTO>> GetItems(QuerySupporter specificatoin, CancellationToken cancellationToken);
-        public Task<TGetDTO> GetItem(Guid Id, CancellationToken cancellationToken);
+        public Task<TGetDTO?> GetItem(Guid Id, CancellationToken cancellationToken);
         public Task UpdateItem(Guid Id, TPostDTO record, CancellationToken cancellationToken);
     }
 }

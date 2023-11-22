@@ -45,10 +45,10 @@ namespace Productivity.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex(new[] { "Email" }, "UN_Email_Account")
                         .IsUnique();
 
-                    b.HasIndex("Login")
+                    b.HasIndex(new[] { "Login" }, "UN_Login_Account")
                         .IsUnique();
 
                     b.ToTable("Accounts", t =>
@@ -62,7 +62,7 @@ namespace Productivity.API.Migrations
                             Id = new Guid("f0e290a9-9054-4ae7-af3b-08dad84feb5b"),
                             Email = "admin@admin.com",
                             Login = "admin",
-                            Password = "$2a$11$GHH6LndY06sRhobMuKN76eRFUlPdjvIQ53lKJd0smCkFh/VLyVqke"
+                            Password = "$2a$11$TyQfIInP3YhERqgIj8xRpeTZo3DrArbqVQXkcR7ABBUaz2Fs.YZ/W"
                         });
                 });
 
@@ -87,7 +87,7 @@ namespace Productivity.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex(new[] { "Name" }, "UN_Culture")
                         .IsUnique();
 
                     b.ToTable("Cultures", t =>
@@ -119,9 +119,10 @@ namespace Productivity.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CultureId");
-
                     b.HasIndex("RegionId");
+
+                    b.HasIndex(new[] { "CultureId", "RegionId", "Year" }, "UN_Productivity")
+                        .IsUnique();
 
                     b.ToTable("Productivities", t =>
                         {
@@ -142,7 +143,7 @@ namespace Productivity.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex(new[] { "Name" }, "UN_Region")
                         .IsUnique();
 
                     b.ToTable("Regions");
@@ -166,7 +167,7 @@ namespace Productivity.API.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("TokenStr")
+                    b.HasIndex(new[] { "TokenStr" }, "UN_Token")
                         .IsUnique();
 
                     b.ToTable("Tokens");

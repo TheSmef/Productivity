@@ -49,11 +49,11 @@ namespace Productivity.Shared.Utility.ModelHelpers
             {
                 inputQuery = inputQuery.OrderBy(specificaion.OrderBy);
             }
+            inputQuery = inputQuery.Skip(specificaion.Skip);
             if (specificaion.Top >= 1)
             {
-                inputQuery.Take(specificaion.Top);
+                inputQuery = inputQuery.Take(specificaion.Top);
             }
-            inputQuery.Skip(specificaion.Skip);
             return inputQuery;
         }
     }
