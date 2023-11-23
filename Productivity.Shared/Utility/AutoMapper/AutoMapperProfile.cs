@@ -27,7 +27,9 @@ namespace Productivity.Shared.Utility.AutoMapper
             CreateMap<AccountPostDTO, Account>();
             CreateMap<CulturePostDTO, Culture>();
             CreateMap<RegionPostDTO, Region>();
-            CreateMap<ProductivityPostDTO, Models.Entity.Productivity>();
+            CreateMap<ProductivityPostDTO, Models.Entity.Productivity>()
+                .ForPath(x => x.Culture.Id, conf => conf.MapFrom(x => x.CultureId))
+                .ForPath(x => x.Region.Id, conf => conf.MapFrom(x => x.RegionId));
         }
 
     }

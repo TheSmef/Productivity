@@ -65,6 +65,8 @@ builder.Services.AddScoped<IProductivityRepository, ProductivityRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRegionService, RegionService>();
 builder.Services.AddScoped<ICultureService, CultureService>();
+builder.Services.AddScoped<IProductivityService, ProductivityService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 

@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Context.Constants;
 using Productivity.API.Data.Repositories.Interfaces;
+using Productivity.API.Services.Data.Base;
 using Productivity.API.Services.Data.Interfaces;
 using Productivity.Shared.Models.DTO.GetModels.CollectionModels;
 using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels;
@@ -16,18 +17,12 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Productivity.API.Services.Data
 {
-    public class RegionService : IRegionService
+    public class RegionService : BaseDataService<Region, RegionDTO, RegionPostDTO>, IRegionService
     {
-        private readonly IRegionRepository _repository;
-        private readonly IMapper _mapper;
 
-        public RegionService(IRegionRepository regionRepository, IMapper mapper)
-        {
-            _repository = regionRepository;
-            _mapper = mapper;
-        }
+        public RegionService(IRegionRepository repository, IMapper mapper) : base(repository, mapper) { }
 
-        public async Task AddItem(RegionPostDTO record, CancellationToken cancellationToken)
+        public override async Task AddItem(RegionPostDTO record, CancellationToken cancellationToken)
         {
             try
             {
@@ -44,39 +39,7 @@ namespace Productivity.API.Services.Data
 
         }
 
-        public async Task<RegionDTO?> GetItem(Guid Id, CancellationToken cancellationToken)
-        {
-            var region = await _repository.GetItem(Id, cancellationToken);
-            if (region == null)
-            {
-                return null;
-            }
-            RegionDTO record = _mapper.Map<RegionDTO>(region);
-            return record;
-        }
-
-        public async Task<CollectionDTO<RegionDTO>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
-        {
-            var query = _repository.GetItems(specification, cancellationToken);
-            CollectionDTO<RegionDTO> responce = new();
-            responce.Collection = await _mapper.ProjectTo<RegionDTO>(query).ToListAsync(cancellationToken);
-            responce.ElementsCount = _repository.GetItemsCount(specification, cancellationToken);
-            responce.TotalPages = specification.Top == 0 ? 0 : PageCounter.CountPages(responce.ElementsCount, specification.Top);
-            responce.CurrentPageIndex = specification.Top == 0 ? 0 : PageCounter.CountCurrentPage(
-                responce.TotalPages,
-                responce.ElementsCount,
-                specification.Skip,
-                specification.Top
-                );
-            return responce;
-        }   
-
-        public async Task RemoveItem(Guid Id, CancellationToken cancellationToken)
-        {
-            await _repository.RemoveItem(Id, cancellationToken);
-        }
-
-        public async Task UpdateItem(Guid Id, RegionPostDTO record, CancellationToken cancellationToken)
+        public override async Task UpdateItem(Guid Id, RegionPostDTO record, CancellationToken cancellationToken)
         {
             try
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Productivity.API.Data.Context;
 using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
@@ -30,16 +31,21 @@ namespace Productivity.API.Data.Repositories.Base
         }
 
         public async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken,
-            Expression<Func<TEntity, object>>? expression = null)
+            List<Expression<Func<TEntity, object>>> expressions)
         {
-            if (expression == null)
+            var items = _context.Set<TEntity>().AsQueryable();
+            foreach(var expression in expressions)
             {
-                return await _context.Set<TEntity>()
-                    .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+                items = items.Include(expression);
             }
+            return await items
+                 .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+        }
+
+        public async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken)
+        {
             return await _context.Set<TEntity>()
-                .Include(expression)
-                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+                 .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
 
         public IQueryable<TEntity> GetItems(CancellationToken cancellationToken,

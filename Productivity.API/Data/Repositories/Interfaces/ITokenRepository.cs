@@ -6,6 +6,7 @@ namespace Productivity.API.Data.Repositories.Interfaces
 {
     public interface ITokenRepository : IRepository<Token>
     {
-        public Task<Token?> GetItem<T>(string token, CancellationToken cancellationToken, Expression<Func<Token, T>>? expression = null);
+        public Task<Token?> GetItem(string token, CancellationToken cancellationToken, List<Expression<Func<Token, object>>> expressions);
+        public Task<Token?> GetItem(string token, CancellationToken cancellationToken);
     }
 }

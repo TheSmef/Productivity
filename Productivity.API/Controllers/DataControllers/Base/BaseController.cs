@@ -36,8 +36,8 @@ namespace Productivity.API.Controllers.DataControllers.Base
         }
 
 
-        [HttpGet("Single")]
-        public async Task<ActionResult<TDTO>> GetItem([FromQuery] Guid Id,
+        [HttpGet("{Id:guid}")]
+        public async Task<ActionResult<TDTO>> GetItem(Guid Id,
             CancellationToken cancellationToken)
         {
             var result = await _service.GetItem(Id, cancellationToken);

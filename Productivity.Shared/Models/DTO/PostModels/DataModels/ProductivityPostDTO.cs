@@ -12,9 +12,9 @@ namespace Productivity.Shared.Models.DTO.PostModels.DataModels
     public class ProductivityPostDTO
     {
         [GuidNotNull(ErrorMessage = "Регион обязателен для ввода!")]
-        public Guid Region { get; set; } = new Guid();
+        public Guid RegionId { get; set; } = new Guid();
         [GuidNotNull(ErrorMessage = "Культура обязательна для ввода!")]
-        public Culture Culture { get; set; } = new Culture();
+        public Guid CultureId { get; set; } = new Guid();
         [Required(ErrorMessage = "Значение урожайности обязательно для ввода!")]
         [Range(0.01, 999999999999.99, ErrorMessage = "Значение урожайности должно быть больше 0 и меньше 15 символов до запятой и 2 символов после запятой")]
         public decimal ProductivityValue { get; set; }

@@ -3,6 +3,7 @@ using Productivity.API.Services.Authentication.Base;
 using Productivity.Shared.Models.DTO.PostModels.AccountModels;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Utility.TokenHelpers;
+using System.Linq.Expressions;
 
 namespace Productivity.API.Services.Authentication
 {
@@ -21,7 +22,8 @@ namespace Productivity.API.Services.Authentication
         }
         public async Task<string?> GetJWT(string token, CancellationToken cancellationToken)
         {
-            var refresh = await tokenRepository.GetItem(token, cancellationToken);
+            var refresh = await tokenRepository.GetItem(token, cancellationToken, 
+                new() { x => x.Account });
             if (refresh == null)
             {
                 return null;

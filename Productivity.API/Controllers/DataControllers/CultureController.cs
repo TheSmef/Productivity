@@ -9,7 +9,7 @@ using Productivity.Shared.Models.Entity;
 
 namespace Productivity.API.Controllers.DataControllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CultureController : BaseController<Culture, CultureDTO, CulturePostDTO>
     {
