@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.VisualBasic;
 using Productivity.API.Data.Context.Constants;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -25,32 +26,21 @@ namespace Productivity.API.Services.Data
 
         public override async Task AddItem(ProductivityPostDTO record, CancellationToken cancellationToken)
         {
-            try
+            Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
+            var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
+            if (culture == null)
             {
-                Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
-                var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
-                if (culture == null)
-                {
-                    throw new QueryException("Данная культура не существует");
-                }
-                item.Culture = culture;
-                var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
-                if (region == null)
-                {
-                    throw new QueryException("Данный регион не существует");
-                }
-                item.Region = region;
+                throw new QueryException(ContextConstants.CultureNotFound);
+            }
+            item.Culture = culture;
+            var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
+            if (region == null)
+            {
+                throw new QueryException(ContextConstants.RegionNotFound);
+            }
+            item.Region = region;
 
-                await _repository.AddItem(item, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                    if (ex.InnerException.Message.Contains(ContextConstants.ProductivityUNIndex))
-                        throw new QueryException("Запись данного региона, с данной культурой," +
-                            " за данный год уже существует");
-                throw;
-            }
+            await _repository.AddItem(item, cancellationToken);
         }
 
         public override async Task<ProductivityDTO?> GetItem(Guid Id, CancellationToken cancellationToken)
@@ -67,32 +57,21 @@ namespace Productivity.API.Services.Data
 
         public override async Task UpdateItem(Guid Id, ProductivityPostDTO record, CancellationToken cancellationToken)
         {
-            try
+            Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
+            var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
+            if (culture == null)
             {
-                Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
-                var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
-                if (culture == null)
-                {
-                    throw new QueryException("Данная культура не существует");
-                }
-                item.Culture = culture;
-                var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
-                if (region == null)
-                {
-                    throw new QueryException("Данный регион не существует");
-                }
-                item.Region = region;
-                item.Id = Id;
-                await _repository.UpdateItem(item, cancellationToken);
+                throw new QueryException(ContextConstants.CultureNotFound);
             }
-            catch (Exception ex)
+            item.Culture = culture;
+            var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
+            if (region == null)
             {
-                if (ex.InnerException != null)
-                    if (ex.InnerException.Message.Contains(ContextConstants.ProductivityUNIndex))
-                        throw new QueryException("Запись данного региона, с данной культурой," +
-                            " за данный год уже существует");
-                throw;
+                throw new QueryException(ContextConstants.RegionNotFound);
             }
+            item.Region = region;
+            item.Id = Id;
+            await _repository.UpdateItem(item, cancellationToken);
         }
     }
 }

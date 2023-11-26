@@ -6,19 +6,22 @@ namespace Productivity.Shared.Utility.ExportImportHelpers
 {
     public static class ExcelExporter
     {
-        public static XLWorkbook getExcelReport<T>(List<T> values, string worksheetname)
+        public static byte[] GetExcelReport<T>(List<T> values, string worksheetname)
         {
-            MemoryStream stream = new MemoryStream();
-            XLWorkbook wb = new XLWorkbook();
-            wb.AddWorksheet(worksheetname).FirstCell().InsertTable(values).SetShowTotalsRow(true);
-            wb.Worksheet(worksheetname).Cells().Style.Alignment.WrapText = true;
-            wb.Worksheet(worksheetname).Columns().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-            wb.Worksheet(worksheetname).Columns().Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            wb.Worksheet(worksheetname).Columns().Width = 50;
-            return wb;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                XLWorkbook wb = new XLWorkbook();
+                wb.AddWorksheet(worksheetname).FirstCell().InsertTable(values).SetShowTotalsRow(true);
+                wb.Worksheet(worksheetname).Cells().Style.Alignment.WrapText = true;
+                wb.Worksheet(worksheetname).Columns().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                wb.Worksheet(worksheetname).Columns().Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                wb.Worksheet(worksheetname).Columns().Width = 50;
+                wb.SaveAs(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
 
-        public static List<T> getImportModel<T>(byte[] array, string worksheetname)
+        public static List<T> GetImportModel<T>(byte[] array, string worksheetname)
         {
             List<T> items = new List<T>();
             Type type = typeof(T);

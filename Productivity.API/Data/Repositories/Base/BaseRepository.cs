@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Productivity.API.Data.Context;
+using Productivity.API.Data.Context.Constants;
 using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ModelHelpers;
 using System.Linq.Expressions;
 
@@ -18,19 +21,24 @@ namespace Productivity.API.Data.Repositories.Base
             _context = context;
         }
 
-        public async Task AddItem(TEntity record, CancellationToken cancellationToken)
+        public virtual async Task AddItem(TEntity record, CancellationToken cancellationToken)
         {
+            await this.Validate(record, cancellationToken);
             _context.Set<TEntity>().Add(record);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task AddRange(ICollection<TEntity> records, CancellationToken cancellationToken)
+        public virtual async Task AddRange(ICollection<TEntity> records, CancellationToken cancellationToken)
         {
             _context.Set<TEntity>().AddRange(records);
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken,
+        public abstract Task<List<string?>> CheckValidate(TEntity record, CancellationToken cancellationToken);
+
+        public abstract Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
+
+        public virtual async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken,
             List<Expression<Func<TEntity, object>>> expressions)
         {
             var items = _context.Set<TEntity>().AsQueryable();
@@ -42,13 +50,19 @@ namespace Productivity.API.Data.Repositories.Base
                  .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
 
-        public async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken)
+        public virtual async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken)
         {
             return await _context.Set<TEntity>()
                  .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
 
-        public IQueryable<TEntity> GetItems(CancellationToken cancellationToken,
+        public async Task<TEntity?> GetItem(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
+        {
+            return await _context.Set<TEntity>()
+                .FirstOrDefaultAsync(expression, cancellationToken);
+        }
+
+        public virtual IQueryable<TEntity> GetItems(CancellationToken cancellationToken,
             Expression<Func<TEntity, bool>>? expression = null)
         {
             if (expression == null)
@@ -58,17 +72,17 @@ namespace Productivity.API.Data.Repositories.Base
             return _context.Set<TEntity>().Where(expression);
         }
 
-        public IQueryable<TEntity> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
+        public virtual IQueryable<TEntity> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
         {
             return DataSpecificationQueryBuilder.GetQuery(specification, _context.Set<TEntity>().AsNoTracking());
         }
 
-        public int GetItemsCount(QuerySupporter specification, CancellationToken cancellationToken)
+        public virtual int GetItemsCount(QuerySupporter specification, CancellationToken cancellationToken)
         {
             return DataSpecificationQueryBuilder.GetQueryCount(specification, _context.Set<TEntity>().AsNoTracking());
         }
 
-        public async Task RemoveItem(Guid Id, CancellationToken cancellationToken)
+        public virtual async Task RemoveItem(Guid Id, CancellationToken cancellationToken)
         {
             var record = await _context.Set<TEntity>()
                 .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
@@ -79,10 +93,17 @@ namespace Productivity.API.Data.Repositories.Base
             }
         }
 
-        public async Task UpdateItem(TEntity record, CancellationToken cancellationToken)
+        public virtual async Task UpdateItem(TEntity record, CancellationToken cancellationToken)
         {
+            if (!_context.Set<TEntity>().Any(x => x.Id == record.Id))
+            {
+                throw new QueryException(ContextConstants.NotFoundError);
+            }
+            await this.Validate(record, cancellationToken);
             _context.Set<TEntity>().Update(record);
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public abstract Task Validate(TEntity record, CancellationToken cancellationToken);
     }
 }

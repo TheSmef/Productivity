@@ -5,7 +5,7 @@ using Productivity.Shared.Models.DTO.PostModels.AccountModels;
 
 namespace Productivity.API.Controllers.AuthControllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {

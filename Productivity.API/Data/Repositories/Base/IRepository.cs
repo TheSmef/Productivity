@@ -16,6 +16,10 @@ namespace Productivity.API.Data.Repositories.Base
         public Task AddRange(ICollection<TEntity> records, CancellationToken cancellationToken);
         public Task RemoveItem(Guid Id, CancellationToken cancellationToken);
         public Task UpdateItem(TEntity record, CancellationToken cancellationToken);
+        public Task<TEntity?> GetItem(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken);
         public IQueryable<TEntity> GetItems(CancellationToken cancellationToken, Expression<Func<TEntity, bool>>? expression = null);
+        public Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
+        public Task Validate(TEntity record, CancellationToken cancellationToken);
+        public Task<List<string?>> CheckValidate(TEntity record, CancellationToken cancellationToken);
     }
 }

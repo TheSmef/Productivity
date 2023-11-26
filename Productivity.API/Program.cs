@@ -9,6 +9,9 @@ using Productivity.API.Services.Authentication;
 using Productivity.API.Services.Authentication.Base;
 using Productivity.API.Services.Data;
 using Productivity.API.Services.Data.Interfaces;
+using Productivity.API.Services.ExportServices;
+using Productivity.API.Services.ExportServices.Interfaces;
+using Productivity.API.Services.Middleware;
 using Productivity.Shared.Utility.AutoMapper;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
@@ -21,6 +24,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddExceptionHandler<ErrorHandler>();
 
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -68,6 +72,9 @@ builder.Services.AddScoped<ICultureService, CultureService>();
 builder.Services.AddScoped<IProductivityService, ProductivityService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
+builder.Services.AddScoped<IProductivityFileService,
+    ProductivityFileService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -77,6 +84,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler(_ => { });
 
 app.UseAuthentication();
 

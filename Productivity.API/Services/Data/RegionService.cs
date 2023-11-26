@@ -21,39 +21,5 @@ namespace Productivity.API.Services.Data
     {
 
         public RegionService(IRegionRepository repository, IMapper mapper) : base(repository, mapper) { }
-
-        public override async Task AddItem(RegionPostDTO record, CancellationToken cancellationToken)
-        {
-            try
-            {
-                Region region = _mapper.Map<Region>(record);
-                await _repository.AddItem(region, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                    if (ex.InnerException.Message.Contains(ContextConstants.RegionUNIndex))
-                        throw new QueryException("Данное название региона уже занято");
-                throw;
-            }
-
-        }
-
-        public override async Task UpdateItem(Guid Id, RegionPostDTO record, CancellationToken cancellationToken)
-        {
-            try
-            {
-                Region region = _mapper.Map<Region>(record);
-                region.Id = Id;
-                await _repository.UpdateItem(region, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                    if (ex.InnerException.Message.Contains(ContextConstants.RegionUNIndex))
-                        throw new QueryException("Данное название региона уже занято");
-                throw;
-            }
-        }
     }
 }

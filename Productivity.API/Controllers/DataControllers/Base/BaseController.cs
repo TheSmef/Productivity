@@ -28,7 +28,7 @@ namespace Productivity.API.Controllers.DataControllers.Base
         }
 
         [HttpGet]
-        public async Task<ActionResult<CollectionDTO<TDTO>>> GetItems([FromQuery] QuerySupporter specification,
+        public virtual async Task<ActionResult<CollectionDTO<TDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
             var result = await _service.GetItems(specification, cancellationToken);
@@ -37,7 +37,7 @@ namespace Productivity.API.Controllers.DataControllers.Base
 
 
         [HttpGet("{Id:guid}")]
-        public async Task<ActionResult<TDTO>> GetItem(Guid Id,
+        public virtual async Task<ActionResult<TDTO>> GetItem(Guid Id,
             CancellationToken cancellationToken)
         {
             var result = await _service.GetItem(Id, cancellationToken);
@@ -49,48 +49,27 @@ namespace Productivity.API.Controllers.DataControllers.Base
         }
 
         [HttpPost]
-        public async Task<ActionResult<TDTO>> PostItem(TPostDTO record,
+        public virtual async Task<ActionResult<TDTO>> PostItem(TPostDTO record,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                await _service.AddItem(record, cancellationToken);
-                return Ok();
-            }
-            catch (QueryException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _service.AddItem(record, cancellationToken);
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<ActionResult<TDTO>> PutItem(Guid Id, TPostDTO record,
+        public virtual async Task<ActionResult<TDTO>> PutItem(Guid Id, TPostDTO record,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                await _service.UpdateItem(Id, record, cancellationToken);
-                return Ok();
-            }
-            catch (QueryException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _service.UpdateItem(Id, record, cancellationToken);
+            return Ok();
         }
 
         [HttpDelete]
-        public async Task<ActionResult<TDTO>> DeleteItem(Guid Id,
+        public virtual async Task<ActionResult<TDTO>> DeleteItem(Guid Id,
             CancellationToken cancellationToken)
         {
-            try
-            {
-                await _service.RemoveItem(Id, cancellationToken);
-                return Ok();
-            }
-            catch (QueryException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _service.RemoveItem(Id, cancellationToken);
+            return Ok();
         }
 
     }

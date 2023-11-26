@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\StatsControllers\" />
-    <Folder Include="Services\ExportServices\" />
     <Folder Include="Services\Messaging\" />
   </ItemGroup>
 

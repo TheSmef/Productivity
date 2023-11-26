@@ -12,6 +12,7 @@ using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ModelHelpers;
+using System.Linq.Dynamic.Core.Exceptions;
 
 namespace Productivity.API.Services.Data.Base
 {
@@ -28,33 +29,52 @@ namespace Productivity.API.Services.Data.Base
             _mapper = mapper;
         }
 
-        public abstract Task AddItem(TPostDTO record, CancellationToken cancellationToken);
+        public virtual async Task AddItem(TPostDTO record, CancellationToken cancellationToken)
+        {
+            TEntity item = _mapper.Map<TEntity>(record);
+            await _repository.AddItem(item, cancellationToken);
+        }
 
         public virtual async Task<TDTO?> GetItem(Guid Id, CancellationToken cancellationToken)
         {
-            var item = await _repository.GetItem(Id, cancellationToken);
-            if (item == null)
+            try
             {
-                return null;
+                var item = await _repository.GetItem(Id, cancellationToken);
+                if (item == null)
+                {
+                    return null;
+                }
+                TDTO record = _mapper.Map<TDTO>(item);
+                return record;
             }
-            TDTO record = _mapper.Map<TDTO>(item);
-            return record;
+            catch (ParseException ex)
+            {
+                throw new QueryException(ContextConstants.ParseError, ex);
+            }
+
         }
 
-        public async Task<CollectionDTO<TDTO>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
+        public virtual async Task<CollectionDTO<TDTO>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
         {
-            var query = _repository.GetItems(specification, cancellationToken);
-            CollectionDTO<TDTO> responce = new();
-            responce.Collection = await _mapper.ProjectTo<TDTO>(query).ToListAsync(cancellationToken);
-            responce.ElementsCount = _repository.GetItemsCount(specification, cancellationToken);
-            responce.TotalPages = specification.Top == 0 ? 0 : PageCounter.CountPages(responce.ElementsCount, specification.Top);
-            responce.CurrentPageIndex = specification.Top == 0 ? 0 : PageCounter.CountCurrentPage(
-                responce.TotalPages,
-                responce.ElementsCount,
-                specification.Skip,
-                specification.Top
-                );
-            return responce;
+            try
+            {
+                var query = _repository.GetItems(specification, cancellationToken);
+                CollectionDTO<TDTO> responce = new();
+                responce.Collection = await _mapper.ProjectTo<TDTO>(query).ToListAsync(cancellationToken);
+                responce.ElementsCount = _repository.GetItemsCount(specification, cancellationToken);
+                responce.TotalPages = specification.Top == 0 ? 0 : PageCounter.CountPages(responce.ElementsCount, specification.Top);
+                responce.CurrentPageIndex = specification.Top == 0 ? 0 : PageCounter.CountCurrentPage(
+                    responce.TotalPages,
+                    responce.ElementsCount,
+                    specification.Skip,
+                    specification.Top
+                    );
+                return responce;
+            }
+            catch (ParseException ex)
+            {
+                throw new QueryException(ContextConstants.ParseError, ex);
+            }
         }
 
         public async Task RemoveItem(Guid Id, CancellationToken cancellationToken)
@@ -62,6 +82,11 @@ namespace Productivity.API.Services.Data.Base
             await _repository.RemoveItem(Id, cancellationToken);
         }
 
-        public abstract Task UpdateItem(Guid Id, TPostDTO record, CancellationToken cancellationToken);
+        public virtual async Task UpdateItem(Guid Id, TPostDTO record, CancellationToken cancellationToken)
+        {
+            TEntity item = _mapper.Map<TEntity>(record);
+            item.Id = Id;
+            await _repository.UpdateItem(item, cancellationToken);
+        }
     }
 }

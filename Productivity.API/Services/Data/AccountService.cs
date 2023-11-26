@@ -18,56 +18,28 @@ namespace Productivity.API.Services.Data
 
         public async override Task AddItem(AccountPostDTO record, CancellationToken cancellationToken)
         {
-            try
-            {
-                Account account = _mapper.Map<Account>(record);
-                account.Password = HashProvider.MakeHash(account.Password);
-                await _repository.AddItem(account, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                {
-                    if (ex.InnerException.Message.Contains(ContextConstants.AccountEmailUNIndex))
-                        throw new QueryException("Данноя электронная почта уже занята");
-                    if (ex.InnerException.Message.Contains(ContextConstants.AccountLoginUNIndex))
-                        throw new QueryException("Данный логин уже занят");
-                }
-                throw;
-            }
+            Account account = _mapper.Map<Account>(record);
+            account.Password = HashProvider.MakeHash(account.Password);
+            await _repository.AddItem(account, cancellationToken);
         }
 
         public async override Task UpdateItem(Guid Id, AccountPostDTO record, CancellationToken cancellationToken)
         {
-            try
+            Account account = _mapper.Map<Account>(record);
+            account.Id = Id;
+            if (account.Password == string.Empty)
             {
-                Account account = _mapper.Map<Account>(record);
-                account.Id = Id;
-                if (account.Password == string.Empty)
+                var check = await _repository.GetItem(Id, cancellationToken);
+                if (check != null)
                 {
-                    var check = await _repository.GetItem(Id, cancellationToken);
-                    if (check != null)
-                    {
-                        account.Password = check.Password;
-                    }
+                    account.Password = check.Password;
                 }
-                else
-                {
-                    account.Password = HashProvider.MakeHash(account.Password);
-                }
-                await _repository.UpdateItem(account, cancellationToken);
             }
-            catch (Exception ex)
+            else
             {
-                if (ex.InnerException != null)
-                {
-                    if (ex.InnerException.Message.Contains(ContextConstants.AccountEmailUNIndex))
-                        throw new QueryException("Данноя электронная почта уже занята");
-                    if (ex.InnerException.Message.Contains(ContextConstants.AccountLoginUNIndex))
-                        throw new QueryException("Данный логин уже занят");
-                }
-                throw;
+                account.Password = HashProvider.MakeHash(account.Password);
             }
+            await _repository.UpdateItem(account, cancellationToken);
         }
     }
 }

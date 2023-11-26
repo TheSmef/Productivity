@@ -9,31 +9,31 @@ namespace Productivity.API.Services.Authentication
 {
     public class AuthService : IAuthService
     {
-        private readonly IAccountRepository accountRepository;
-        private readonly ITokenRepository tokenRepository;
-        private readonly IConfiguration configuration;
+        private readonly IAccountRepository _accountRepository;
+        private readonly ITokenRepository _tokenRepository;
+        private readonly IConfiguration _configuration;
         public AuthService(IAccountRepository accountRepository, 
             ITokenRepository tokenRepository,
             IConfiguration configuration)
         {
-            this.accountRepository = accountRepository;
-            this.tokenRepository = tokenRepository;
-            this.configuration = configuration;
+            _accountRepository = accountRepository;
+            _tokenRepository = tokenRepository;
+            _configuration = configuration;
         }
         public async Task<string?> GetJWT(string token, CancellationToken cancellationToken)
         {
-            var refresh = await tokenRepository.GetItem(token, cancellationToken, 
+            var refresh = await _tokenRepository.GetItem(token, cancellationToken, 
                 new() { x => x.Account });
             if (refresh == null)
             {
                 return null;
             }
-            return TokenHandler.CreateJwtToken(refresh.Account, configuration);
+            return TokenHandler.CreateJwtToken(refresh.Account, _configuration);
         }
 
         public async Task<string?> Login(AuthDTO record, CancellationToken cancellationToken)
         {
-            var account = await accountRepository.AuthUser(record, cancellationToken);
+            var account = await _accountRepository.AuthUser(record, cancellationToken);
             if (account == null)
             {
                 return null;
@@ -43,7 +43,7 @@ namespace Productivity.API.Services.Authentication
                 Account = account,
                 TokenStr = TokenHandler.GenerateRefreshToken()
             };
-            await tokenRepository.AddItem(token, cancellationToken);
+            await _tokenRepository.AddItem(token, cancellationToken);
             return token.TokenStr;
         }
     }
