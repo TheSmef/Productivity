@@ -8,6 +8,7 @@ using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ModelHelpers;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace Productivity.API.Data.Repositories
 {
@@ -17,12 +18,23 @@ namespace Productivity.API.Data.Repositories
 
         public override async Task<List<string?>> CheckValidate(Shared.Models.Entity.Productivity record, CancellationToken cancellationToken)
         {
-            List<string> result = new();
+            List<string?> result = new();
             if (await _context.Productivities.AnyAsync(x => x.Culture == record.Culture
                 && x.Region == record.Region && x.Year == record.Year && x.Id != record.Id,
-                cancellationToken: cancellationToken))
+                cancellationToken))
             {
                 result.Add(ContextConstants.ProductivityUNError);
+            }
+            return result;
+        }
+
+        public override List<string?> CheckValidateCollection(Shared.Models.Entity.Productivity record, ICollection<Shared.Models.Entity.Productivity> records)
+        {
+            List<string?> result = new();
+            if (records.Where(x => x.Culture == record.Culture
+                && x.Region == record.Region && x.Year == record.Year).Count() > 1)
+            {
+                result.Add(ContextConstants.ProductivityUNErrorCollection);
             }
             return result;
         }
@@ -44,7 +56,7 @@ namespace Productivity.API.Data.Repositories
         {
             if (await _context.Productivities.AnyAsync(x => x.Culture == record.Culture
             && x.Region == record.Region && x.Year == record.Year && x.Id != record.Id,
-                    cancellationToken: cancellationToken))
+                   cancellationToken))
             {
                 throw new DataException(ContextConstants.ProductivityUNError);
             }

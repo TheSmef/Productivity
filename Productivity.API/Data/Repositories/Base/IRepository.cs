@@ -21,5 +21,6 @@ namespace Productivity.API.Data.Repositories.Base
         public Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
         public Task Validate(TEntity record, CancellationToken cancellationToken);
         public Task<List<string?>> CheckValidate(TEntity record, CancellationToken cancellationToken);
+        public List<string?> CheckValidateCollection(TEntity record, ICollection<TEntity> records);
     }
 }

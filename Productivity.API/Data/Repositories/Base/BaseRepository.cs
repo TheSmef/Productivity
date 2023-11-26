@@ -36,6 +36,8 @@ namespace Productivity.API.Data.Repositories.Base
 
         public abstract Task<List<string?>> CheckValidate(TEntity record, CancellationToken cancellationToken);
 
+        public abstract List<string?> CheckValidateCollection(TEntity record, ICollection<TEntity> records);
+
         public abstract Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
 
         public virtual async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken,

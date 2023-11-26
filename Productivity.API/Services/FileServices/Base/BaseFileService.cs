@@ -11,6 +11,7 @@ using Productivity.API.Data.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Productivity.Shared.Utility.Exceptions;
+using Productivity.Shared.Utility.Validators;
 
 namespace Productivity.API.Services.FileServices.Base
 {
@@ -41,21 +42,12 @@ namespace Productivity.API.Services.FileServices.Base
         {
             var items = ExcelExporter.GetImportModel<TFileModel>(bytes, _worksheet);
             var itemsToAdd = new List<TEntity>();
-            foreach(var item in items)
+            ListValidator.Validate(items);
+            foreach (var item in items)
             {
-                if (item == null)
-                {
-                    throw new DataException($"Пустой элемент на строке {items.FindIndex(x => x == null) + 1}");
-                }
-                ValidationContext validationContext
-                        = new ValidationContext(item);
-                List<ValidationResult> results = new();
-                if (!Validator.TryValidateObject(item, validationContext, results, true))
-                {
-                    throw new DataException(results.Select(x => x.ErrorMessage).ToList(), $"Ошибка на строке {items.FindIndex(x => x == item) + 1}");
-                }
                 var itemToAdd = _mapper.Map<TEntity>(item);
-                List<string?> validationResults = await _repository.CheckValidate(itemToAdd, cancellationToken);
+                List<string?> validationResults = [.. await _repository.CheckValidate(itemToAdd, cancellationToken),
+                    .. _repository.CheckValidateCollection(itemToAdd, itemsToAdd)];
                 if (validationResults != null)
                 {
                     if (validationResults.Count > 0)
@@ -65,7 +57,6 @@ namespace Productivity.API.Services.FileServices.Base
                 }
                 itemsToAdd.Add(itemToAdd);
             }
-
             await _repository.AddRange(itemsToAdd, cancellationToken);
         }
     }

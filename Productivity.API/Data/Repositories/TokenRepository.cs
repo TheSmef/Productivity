@@ -19,11 +19,21 @@ namespace Productivity.API.Data.Repositories
 
         public override async Task<List<string?>> CheckValidate(Token record, CancellationToken cancellationToken)
         {
-            List<string> result = new();
+            List<string?> result = new();
             if (await _context.Tokens.AnyAsync(x => x.TokenStr == record.TokenStr && x.Id != record.Id,
-                cancellationToken: cancellationToken))
+                cancellationToken))
             {
-                result.Add(ContextConstants.TokenUNIndex);
+                result.Add(ContextConstants.TokenUNError);
+            }
+            return result;
+        }
+
+        public override List<string?> CheckValidateCollection(Token record, ICollection<Token> records)
+        {
+            List<string?> result = new();
+            if (records.Where(x => x.TokenStr == record.TokenStr).Count() > 1)
+            {
+                result.Add(ContextConstants.TokenUNErrorCollection);
             }
             return result;
         }
@@ -60,9 +70,9 @@ namespace Productivity.API.Data.Repositories
         public override async Task Validate(Token record, CancellationToken cancellationToken)
         {
             if (await _context.Tokens.AnyAsync(x => x.TokenStr == record.TokenStr && x.Id != record.Id,
-                    cancellationToken: cancellationToken))
+                    cancellationToken))
             {
-                throw new DataException(ContextConstants.TokenUNIndex);
+                throw new DataException(ContextConstants.TokenUNError);
             }
         }
     }

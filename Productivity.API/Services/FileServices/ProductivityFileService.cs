@@ -13,6 +13,7 @@ using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ExportImportHelpers;
+using Productivity.Shared.Utility.Validators;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 
@@ -32,35 +33,28 @@ namespace Productivity.API.Services.ExportServices
         public override async Task ImportItems(byte[] bytes, CancellationToken cancellationToken)
         {
             var items = ExcelExporter.GetImportModel<ProductivityFileModel>(bytes, _worksheet);
-            List<Shared.Models.Entity.Productivity> itemsToAdd = new();
-            foreach (var item in items)
+            ListValidator.Validate(items);
+            List<Culture> cultures = _mapper.Map<List<Culture>>(items.DistinctBy(x => x.Culture));
+            for (int i =0; i < cultures.Count; i++)
+                cultures[i] = await _cultureRepository.EnsureCreated(_mapper.Map<Culture>(cultures[i]), cancellationToken);
+            List<Region> regions = _mapper.Map<List<Region>>(items.DistinctBy(x => x.Region));
+            for (int i = 0; i < regions.Count; i++)
+                regions[i] = await _regionRepository.EnsureCreated(_mapper.Map<Region>(regions[i]), cancellationToken);
+            List<Shared.Models.Entity.Productivity> itemsToAdd = 
+                _mapper.Map<List<Shared.Models.Entity.Productivity>>(items);
+            foreach (var item in itemsToAdd)
             {
-                if (item == null)
-                {
-                    throw new DataException($"Пустой элемент на строке {items.FindIndex(x => x == null)}");
-                }
-                ValidationContext validationContext
-                        = new ValidationContext(item);
-                List<ValidationResult> results = new();
-                if (!Validator.TryValidateObject(item, validationContext, results, true))
-                {
-                    throw new DataException(results.Select(x => x.ErrorMessage).ToList(), $"Ошибка на строке {items.FindIndex(x => x == item) + 1}");
-                }
-                Culture culture = await _cultureRepository.EnsureCreated(_mapper.Map<Culture>(item), cancellationToken);
-                Region region = await _regionRepository.EnsureCreated(_mapper.Map<Region>(item), cancellationToken);
-                Shared.Models.Entity.Productivity productivity =
-                    _mapper.Map<Shared.Models.Entity.Productivity>(item);
-                productivity.Region = region;
-                productivity.Culture = culture;
-                List<string?> validationResults = await _repository.CheckValidate(productivity, cancellationToken);
+                item.Region = regions.First(x => x.Name.Equals(item.Region.Name, StringComparison.CurrentCultureIgnoreCase));
+                item.Culture = cultures.First(x => x.Name.Equals(item.Culture.Name, StringComparison.CurrentCultureIgnoreCase));
+                List<string?> validationResults = [.. await _repository.CheckValidate(item, cancellationToken),
+                    .. _repository.CheckValidateCollection(item, itemsToAdd)];
                 if (validationResults != null)
                 {
                     if (validationResults.Count > 0)
                     {
-                        throw new DataException(validationResults, $"Ошибка на строке {items.FindIndex(x => x == item) + 1}");
+                        throw new DataException(validationResults, $"Ошибка на строке {itemsToAdd.FindIndex(x => x == item) + 1}");
                     }
                 }
-                itemsToAdd.Add(productivity);
             }
             await _repository.AddRange(itemsToAdd, cancellationToken);
         }

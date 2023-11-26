@@ -8,6 +8,7 @@ using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ModelHelpers;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace Productivity.API.Data.Repositories
 {
@@ -17,11 +18,21 @@ namespace Productivity.API.Data.Repositories
 
         public override async Task<List<string?>> CheckValidate(Culture record, CancellationToken cancellationToken)
         {
-            List<string> result = new();
+            List<string?> result = new();
             if (await _context.Cultures.AnyAsync(x => x.Name == record.Name && x.Id != record.Id,
-                    cancellationToken: cancellationToken))
+                    cancellationToken))
             {
                 result.Add(ContextConstants.CultureUNError);
+            }
+            return result;
+        }
+
+        public override List<string?> CheckValidateCollection(Culture record, ICollection<Culture> records)
+        {
+            List<string?> result = new();
+            if (records.Where(x => x.Name == record.Name).Count() > 1)
+            {
+                result.Add(ContextConstants.CultureUNErrorCollection);
             }
             return result;
         }
@@ -40,7 +51,7 @@ namespace Productivity.API.Data.Repositories
         public override async Task Validate(Culture record, CancellationToken cancellationToken)
         {
             if (await _context.Cultures.AnyAsync(x => x.Name == record.Name && x.Id != record.Id,
-                    cancellationToken: cancellationToken))
+                    cancellationToken))
             {
                 throw new DataException(ContextConstants.CultureUNError);
             }

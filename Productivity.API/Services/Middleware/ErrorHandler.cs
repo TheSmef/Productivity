@@ -8,23 +8,24 @@ namespace Productivity.API.Services.Middleware
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            (int status, string message, List<string?> errors) = exception switch
+            ErrorModel responce = exception switch
             {
-                QueryException => (400, exception.Message, new List<string?>()),
-                DataException => (400, exception.Message, ((DataException)exception).Errors),
-                _ => (-1, string.Empty, new List<string?>())
+                QueryException => new ErrorModel() { 
+                    Status = 400, 
+                    Message = exception.Message, 
+                    Errors = new() },
+                DataException => new ErrorModel() { 
+                    Status = 400, 
+                    Message = exception.Message, 
+                    Errors = ((DataException)exception).Errors },
+                _ => new ErrorModel()
             };
-            if (status == -1)
+            if (responce.Status == -1)
             {
                 return false;
             }
-            httpContext.Response.StatusCode = status;
-            await httpContext.Response.WriteAsJsonAsync(new ErrorModel()
-            {
-                Message = message,
-                Status = status,
-                Errors = errors ?? new()
-            }, cancellationToken);
+            httpContext.Response.StatusCode = responce.Status;
+            await httpContext.Response.WriteAsJsonAsync(responce, cancellationToken);
             return true;
         }
     }

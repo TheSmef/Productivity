@@ -16,6 +16,16 @@
         public const string RegionNotFound = "Данный регион не существует";
         public const string ProductivityUNError = "Запись данного региона, с данной культурой, за данный год уже существует";
         public const string RegionUNError = "Данное название региона уже занято";
+        public const string TokenUNError = "Данный токен уже существует";
+
+
+        public const string AccountUNEmailErrorCollection = "Данная электронная почта уже занята другим элементом в коллекции";
+        public const string AccountUNLoginErrorCollection = "Данный логин уже занят другим элементом в коллекции";
+        public const string CultureUNErrorCollection = "Данное название культуры уже занято другим элементом в коллекции";
+        public const string ProductivityUNErrorCollection = "Запись данного региона, с данной культурой, за данный год уже существует в коллекции";
+        public const string RegionUNErrorCollection = "Данное название региона уже занято другим элементом в коллекции";
+        public const string TokenUNErrorCollection = "Данный токен уже существует в коллекции";
+
 
         public const string ParseError = "Ошибка при обработке строки запроса";
         public const string NotFoundError = "Запись не существует";

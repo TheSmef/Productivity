@@ -34,16 +34,30 @@ namespace Productivity.API.Data.Repositories
 
         public override async Task<List<string?>> CheckValidate(Account record, CancellationToken cancellationToken)
         {
-            List<string> result = new();
+            List<string?> result = new();
             if (await _context.Accounts.AnyAsync(x => x.Email == record.Email && x.Id != record.Id,
-                cancellationToken: cancellationToken))
+                cancellationToken))
             {
                 result.Add(ContextConstants.AccountUNEmailError);
             }
-            if (await _context.Accounts.AnyAsync(x => x.Login == record.Login && x.Id != record.Id,
-                cancellationToken: cancellationToken))
+            if (await _context.Accounts.AnyAsync(x => x.Login == record.Login && x.Id != record.Id, 
+                cancellationToken))
             {
                 result.Add(ContextConstants.AccountUNLoginError);
+            }
+            return result;
+        }
+
+        public override List<string?> CheckValidateCollection(Account record, ICollection<Account> records)
+        {
+            List<string?> result = new();
+            if (records.Where(x => x.Email == record.Email).Count() > 1)
+            {
+                result.Add(ContextConstants.AccountUNEmailErrorCollection);
+            }
+            if (records.Where(x => x.Login == record.Login).Count() > 1)
+            {
+                result.Add(ContextConstants.AccountUNLoginErrorCollection);
             }
             return result;
         }
@@ -62,12 +76,12 @@ namespace Productivity.API.Data.Repositories
         public override async Task Validate(Account record, CancellationToken cancellationToken)
         {
             if (await _context.Accounts.AnyAsync(x => x.Email == record.Email && x.Id != record.Id,
-                cancellationToken: cancellationToken))
+                cancellationToken))
             {
                 throw new DataException(ContextConstants.AccountUNEmailError);
             }
             if (await _context.Accounts.AnyAsync(x => x.Login == record.Login && x.Id != record.Id,
-                cancellationToken: cancellationToken))
+                cancellationToken))
             {
                 throw new DataException(ContextConstants.AccountUNLoginError);
             }
