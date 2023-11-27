@@ -36,22 +36,14 @@ namespace Productivity.API.Services.Data.Base
         }
 
         public virtual async Task<TDTO?> GetItem(Guid Id, CancellationToken cancellationToken)
-        {
-            try
+        {     
+            var item = await _repository.GetItem(Id, cancellationToken);
+            if (item == null)
             {
-                var item = await _repository.GetItem(Id, cancellationToken);
-                if (item == null)
-                {
-                    return null;
-                }
-                TDTO record = _mapper.Map<TDTO>(item);
-                return record;
+                return null;
             }
-            catch (ParseException ex)
-            {
-                throw new QueryException(ContextConstants.ParseError, ex);
-            }
-
+            TDTO record = _mapper.Map<TDTO>(item);
+            return record;
         }
 
         public virtual async Task<CollectionDTO<TDTO>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
@@ -73,6 +65,10 @@ namespace Productivity.API.Services.Data.Base
                 return responce;
             }
             catch (ParseException ex)
+            {
+                throw new QueryException(ContextConstants.ParseError, ex);
+            }
+            catch (InvalidOperationException ex)
             {
                 throw new QueryException(ContextConstants.ParseError, ex);
             }
