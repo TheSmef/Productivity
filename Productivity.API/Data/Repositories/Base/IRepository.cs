@@ -8,10 +8,8 @@ namespace Productivity.API.Data.Repositories.Base
     public interface IRepository<TEntity>
         where TEntity : BaseEntity
     {
-        public IQueryable<TEntity> GetItems(QuerySupporter specification, CancellationToken cancellationToken);
         public Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken, List<Expression<Func<TEntity, object>>> expressions);
         public Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken);
-        public int GetItemsCount(QuerySupporter specification, CancellationToken cancellationToken);
         public Task AddItem(TEntity record, CancellationToken cancellationToken);
         public Task AddRange(ICollection<TEntity> records, CancellationToken cancellationToken);
         public Task RemoveItem(Guid Id, CancellationToken cancellationToken);

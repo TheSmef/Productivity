@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.Validators;
+using Productivity.Shared.Utility.ModelHelpers;
 
 namespace Productivity.API.Services.FileServices.Base
 {
@@ -33,7 +34,8 @@ namespace Productivity.API.Services.FileServices.Base
 
         public async Task<FileModel> ExportItems(QuerySupporter specification, CancellationToken cancellationToken)
         {
-            var items = _mapper.ProjectTo<TFileModel>(_repository.GetItems(specification, cancellationToken));
+            var items = DataSpecificationQueryBuilder.GetQuery(specification,
+                _mapper.ProjectTo<TFileModel>(_repository.GetItems(cancellationToken)));
             var file = ExcelExporter.GetExcelReport(await items.ToListAsync(cancellationToken), _worksheet);
             return new FileModel() { Data = file, Name = $"{_worksheet}_{DateTime.Today.ToShortDateString()}" };
         }

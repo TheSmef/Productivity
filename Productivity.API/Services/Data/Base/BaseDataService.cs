@@ -58,10 +58,11 @@ namespace Productivity.API.Services.Data.Base
         {
             try
             {
-                var query = _repository.GetItems(specification, cancellationToken);
+                var query = _mapper.ProjectTo<TDTO>(_repository.GetItems(cancellationToken).AsNoTracking());
                 CollectionDTO<TDTO> responce = new();
-                responce.Collection = await _mapper.ProjectTo<TDTO>(query).ToListAsync(cancellationToken);
-                responce.ElementsCount = _repository.GetItemsCount(specification, cancellationToken);
+                responce.ElementsCount = DataSpecificationQueryBuilder.GetQueryCount(specification, query);
+                responce.Collection = await DataSpecificationQueryBuilder.GetQuery(specification, query)
+                    .ToListAsync(cancellationToken);
                 responce.TotalPages = specification.Top == 0 ? 0 : PageCounter.CountPages(responce.ElementsCount, specification.Top);
                 responce.CurrentPageIndex = specification.Top == 0 ? 0 : PageCounter.CountCurrentPage(
                     responce.TotalPages,

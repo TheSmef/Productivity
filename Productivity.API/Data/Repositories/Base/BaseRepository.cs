@@ -74,16 +74,6 @@ namespace Productivity.API.Data.Repositories.Base
             return _context.Set<TEntity>().Where(expression);
         }
 
-        public virtual IQueryable<TEntity> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
-        {
-            return DataSpecificationQueryBuilder.GetQuery(specification, _context.Set<TEntity>().AsNoTracking());
-        }
-
-        public virtual int GetItemsCount(QuerySupporter specification, CancellationToken cancellationToken)
-        {
-            return DataSpecificationQueryBuilder.GetQueryCount(specification, _context.Set<TEntity>().AsNoTracking());
-        }
-
         public virtual async Task RemoveItem(Guid Id, CancellationToken cancellationToken)
         {
             var record = await _context.Set<TEntity>()
