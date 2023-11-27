@@ -1,7 +1,9 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
 using System.Linq.Dynamic.Core;
+using System.Linq.Dynamic.Core.Exceptions;
 
 namespace Productivity.Shared.Utility.ModelHelpers
 {
@@ -12,49 +14,74 @@ namespace Productivity.Shared.Utility.ModelHelpers
                 QuerySupporter specificaion,
                 IQueryable inputQuery)
         {
-            if (!string.IsNullOrEmpty(specificaion.Filter))
+            try
             {
-                if (specificaion.FilterParams != null)
+                if (!string.IsNullOrEmpty(specificaion.Filter))
                 {
-                    inputQuery = inputQuery.Where(specificaion.Filter, specificaion.FilterParams);
+                    if (specificaion.FilterParams != null)
+                    {
+                        inputQuery = inputQuery.Where(specificaion.Filter, specificaion.FilterParams);
+                    }
+                    else
+                    {
+                        inputQuery = inputQuery.Where(specificaion.Filter);
+                    }
                 }
-                else
+                if (!string.IsNullOrEmpty(specificaion.OrderBy))
                 {
-                    inputQuery = inputQuery.Where(specificaion.Filter);
+                    inputQuery = inputQuery.OrderBy(specificaion.OrderBy);
                 }
+                return inputQuery.Count();
+
             }
-            if (!string.IsNullOrEmpty(specificaion.OrderBy))
+            catch (ParseException ex)
             {
-                inputQuery = inputQuery.OrderBy(specificaion.OrderBy);
+                throw new QueryException(ContextConstants.ParseError, ex);
+
             }
-            return inputQuery.Count();
+            catch (InvalidOperationException ex)
+            {
+                throw new QueryException(ContextConstants.ParseError, ex);
+            }
         }
 
         public static IQueryable<T> GetQuery<T>(
                 QuerySupporter specificaion,
                 IQueryable<T> inputQuery)
         {
-            if (!string.IsNullOrEmpty(specificaion.Filter))
+            try 
             {
-                if (specificaion.FilterParams != null)
+                if (!string.IsNullOrEmpty(specificaion.Filter))
                 {
-                    inputQuery = inputQuery.Where(specificaion.Filter, specificaion.FilterParams);
+                    if (specificaion.FilterParams != null)
+                    {
+                        inputQuery = inputQuery.Where(specificaion.Filter, specificaion.FilterParams);
+                    }
+                    else
+                    {
+                        inputQuery = inputQuery.Where(specificaion.Filter);
+                    }
                 }
-                else
+                if (!string.IsNullOrEmpty(specificaion.OrderBy))
                 {
-                    inputQuery = inputQuery.Where(specificaion.Filter);
+                    inputQuery = inputQuery.OrderBy(specificaion.OrderBy);
                 }
+                inputQuery = inputQuery.Skip(specificaion.Skip);
+                if (specificaion.Top >= 1)
+                {
+                    inputQuery = inputQuery.Take(specificaion.Top);
+                }
+                return inputQuery;
             }
-            if (!string.IsNullOrEmpty(specificaion.OrderBy))
+            catch (ParseException ex)
             {
-                inputQuery = inputQuery.OrderBy(specificaion.OrderBy);
+                throw new QueryException(ContextConstants.ParseError, ex);
+
             }
-            inputQuery = inputQuery.Skip(specificaion.Skip);
-            if (specificaion.Top >= 1)
+            catch (InvalidOperationException ex)
             {
-                inputQuery = inputQuery.Take(specificaion.Top);
+                throw new QueryException(ContextConstants.ParseError, ex);
             }
-            return inputQuery;
         }
     }
 }

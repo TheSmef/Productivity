@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.VisualBasic;
-using Productivity.API.Data.Context.Constants;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
 using Productivity.API.Services.Data.Base;
@@ -8,6 +7,7 @@ using Productivity.API.Services.Data.Interfaces;
 using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels;
 using Productivity.Shared.Models.DTO.PostModels.DataModels;
 using Productivity.Shared.Models.Entity;
+using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
 
 namespace Productivity.API.Services.Data

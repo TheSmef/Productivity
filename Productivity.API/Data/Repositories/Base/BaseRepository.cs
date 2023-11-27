@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Productivity.API.Data.Context;
-using Productivity.API.Data.Context.Constants;
 using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ModelHelpers;
 using System.Linq.Expressions;

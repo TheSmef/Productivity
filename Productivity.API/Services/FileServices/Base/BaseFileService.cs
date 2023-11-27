@@ -13,6 +13,7 @@ using System.ComponentModel.DataAnnotations;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.Validators;
 using Productivity.Shared.Utility.ModelHelpers;
+using System.Linq.Dynamic.Core.Exceptions;
 
 namespace Productivity.API.Services.FileServices.Base
 {

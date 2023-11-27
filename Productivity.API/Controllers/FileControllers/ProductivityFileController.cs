@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Productivity.API.Controllers.FileControllers.Base;
 using Productivity.API.Services.ExportServices.Base;
@@ -11,6 +12,7 @@ namespace Productivity.API.Controllers.FileControllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductivityFileController :
         BaseFileController<Shared.Models.Entity.Productivity, ProductivityFileModel>
     {

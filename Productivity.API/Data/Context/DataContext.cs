@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using Productivity.API.Data.Context.Constants;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Security;
+using Productivity.Shared.Utility.Constants;
 using System.Data;
 using System.Diagnostics.Contracts;
 using System.Xml.Linq;
