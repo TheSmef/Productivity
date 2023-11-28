@@ -13,6 +13,6 @@ namespace Productivity.Shared.Models.Entity
         [Required]
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
-        public ICollection<Productivity>? Productivities { get; set; }
+        public ICollection<Productivity> Productivities { get; set; } = new List<Productivity>();
     }
 }

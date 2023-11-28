@@ -2971,6 +2971,7 @@
           "AutoMapper": "12.0.1",
           "BCrypt.Net-Next": "4.0.3",
           "ClosedXML": "0.102.1",
+          "Microsoft.EntityFrameworkCore": "8.0.0",
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0",
           "Microsoft.IdentityModel.Tokens": "6.24.0",
           "System.IdentityModel.Tokens.Jwt": "6.24.0",

@@ -12,6 +12,8 @@ using Productivity.API.Services.Data.Interfaces;
 using Productivity.API.Services.ExportServices;
 using Productivity.API.Services.ExportServices.Interfaces;
 using Productivity.API.Services.Middleware;
+using Productivity.API.Services.Stats;
+using Productivity.API.Services.Stats.Base;
 using Productivity.Shared.Utility.AutoMapper;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
@@ -74,6 +76,9 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddScoped<IProductivityFileService,
     ProductivityFileService>();
+
+builder.Services.AddScoped<IProductivityStatsService,
+    ProductivityStatsService>();
 
 var app = builder.Build();
 

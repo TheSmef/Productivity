@@ -9,6 +9,6 @@ namespace Productivity.Shared.Models.DTO.GetModels.StatsModels.SingleModels
     public class ProductivityStatsModel
     {
         public decimal Productivity { get; set; } = decimal.Zero;
-        public int Year { get; set; }
+        public string Region { get; set; } = string.Empty;
     }
 }

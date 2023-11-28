@@ -17,6 +17,6 @@ namespace Productivity.Shared.Models.Entity
         public decimal CostToPlant { get; set; }
         [Required]
         public decimal PriceToSell { get; set; }
-        public ICollection<Productivity>? Productivities { get; set; }
+        public ICollection<Productivity> Productivities { get; set; } = new List<Productivity>();
     }
 }

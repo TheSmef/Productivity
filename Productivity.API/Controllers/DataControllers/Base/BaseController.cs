@@ -49,7 +49,7 @@ namespace Productivity.API.Controllers.DataControllers.Base
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult<TDTO>> PostItem(TPostDTO record,
+        public virtual async Task<ActionResult> PostItem(TPostDTO record,
             CancellationToken cancellationToken)
         {
             await _service.AddItem(record, cancellationToken);
@@ -57,7 +57,7 @@ namespace Productivity.API.Controllers.DataControllers.Base
         }
 
         [HttpPut]
-        public virtual async Task<ActionResult<TDTO>> PutItem(Guid Id, TPostDTO record,
+        public virtual async Task<ActionResult> PutItem(Guid Id, TPostDTO record,
             CancellationToken cancellationToken)
         {
             await _service.UpdateItem(Id, record, cancellationToken);
@@ -65,7 +65,7 @@ namespace Productivity.API.Controllers.DataControllers.Base
         }
 
         [HttpDelete]
-        public virtual async Task<ActionResult<TDTO>> DeleteItem(Guid Id,
+        public virtual async Task<ActionResult> DeleteItem(Guid Id,
             CancellationToken cancellationToken)
         {
             await _service.RemoveItem(Id, cancellationToken);

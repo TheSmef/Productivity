@@ -46,6 +46,18 @@ namespace Productivity.Shared.Utility.ModelHelpers
         }
 
         public static IQueryable<T> GetQuery<T>(
+        int top, int skip,
+        IQueryable<T> inputQuery)
+        {
+            inputQuery = inputQuery.Skip(skip);
+            if (top >= 1)
+            {
+                inputQuery = inputQuery.Take(top);
+            }
+            return inputQuery;
+        }
+
+        public static IQueryable<T> GetQuery<T>(
                 QuerySupporter specificaion,
                 IQueryable<T> inputQuery)
         {

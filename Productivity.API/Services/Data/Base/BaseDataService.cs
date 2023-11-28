@@ -48,17 +48,7 @@ namespace Productivity.API.Services.Data.Base
         public virtual async Task<CollectionDTO<TDTO>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
         {
             var query = _mapper.ProjectTo<TDTO>(_repository.GetItems(cancellationToken).AsNoTracking());
-            CollectionDTO<TDTO> responce = new();
-            responce.ElementsCount = DataSpecificationQueryBuilder.GetQueryCount(specification, query);
-            responce.Collection = await DataSpecificationQueryBuilder.GetQuery(specification, query)
-                .ToListAsync(cancellationToken);
-            responce.TotalPages = specification.Top == 0 ? 0 : PageCounter.CountPages(responce.ElementsCount, specification.Top);
-            responce.CurrentPageIndex = specification.Top == 0 ? 0 : PageCounter.CountCurrentPage(
-                responce.TotalPages,
-                responce.ElementsCount,
-                specification.Skip,
-                specification.Top
-                );
+            CollectionDTO<TDTO> responce = await ResponceModelBuilder.Build(specification, query, cancellationToken);
             return responce;
         }
 
