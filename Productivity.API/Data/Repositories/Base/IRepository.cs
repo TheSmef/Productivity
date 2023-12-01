@@ -18,6 +18,7 @@ namespace Productivity.API.Data.Repositories.Base
         public IQueryable<TEntity> GetItems(CancellationToken cancellationToken, Expression<Func<TEntity, bool>>? expression = null);
         public Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
         public Task Validate(TEntity record, CancellationToken cancellationToken);
+        public Task<bool> Exists(Guid Id);
         public Task<List<string?>> CheckValidate(TEntity record, CancellationToken cancellationToken);
         public List<string?> CheckValidateCollection(TEntity record, ICollection<TEntity> records);
     }

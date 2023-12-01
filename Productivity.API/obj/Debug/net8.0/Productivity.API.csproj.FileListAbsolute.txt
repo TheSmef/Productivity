@@ -291,3 +291,4 @@ C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Mi
 C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Scrutor.dll
 C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.dll
 C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+C:\Users\User\Documents\GitHub\Productivity\Productivity.API\bin\Debug\net8.0\RabbitMQ.Client.dll

@@ -18,6 +18,10 @@ namespace Productivity.API.Services.Middleware
                     Status = 400, 
                     Message = exception.Message, 
                     Errors = ((DataException)exception).Errors },
+                BrokerException => new ErrorModel() {
+                    Status = 400,
+                    Message = exception.Message,
+                    Errors = new() },
                 _ => new ErrorModel()
             };
             if (responce.Status == -1)

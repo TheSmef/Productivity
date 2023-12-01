@@ -40,6 +40,11 @@ namespace Productivity.API.Data.Repositories.Base
 
         public abstract Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
 
+        public async Task<bool> Exists(Guid Id)
+        {
+            return await _context.Set<TEntity>().AnyAsync(x => x.Id == Id);
+        }
+
         public virtual async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken,
             List<Expression<Func<TEntity, object>>> expressions)
         {

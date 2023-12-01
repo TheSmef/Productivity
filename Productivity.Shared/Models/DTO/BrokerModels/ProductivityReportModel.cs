@@ -16,7 +16,7 @@ namespace Productivity.Shared.Models.DTO.BrokerModels
         [GuidNotNull(ErrorMessage = "Культура обязательна для ввода!")]
         public Guid CultureId { get; set; } = new Guid();
         [Required(ErrorMessage = "Запрашиваемый год обязателен для ввода!")]
-        [DependableRange(1, 2, ErrorMessage = "Год записи должен быть между {1} и {2}")]
+        [DependableRange(-1, -2, ErrorMessage = "Год записи должен быть между {1} и {2}")]
         public int Year { get; set; }
     }
 }

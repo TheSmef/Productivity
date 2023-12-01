@@ -30,5 +30,8 @@
         public const string ParseError = "Ошибка при обработке строки запроса";
         public const string ParseErrorFile = "Ошибка при обработке файла";
         public const string NotFoundError = "Запись не существует";
+        public const string ShortageOfData = "Недостаточно записей для обработки";
+
+        public const string NoConnectionToBroker = "Связь с брокером отсутствует";
     }
 }
