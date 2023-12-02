@@ -1,4 +1,5 @@
-﻿using Productivity.API.Data.Repositories.Interfaces;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Productivity.API.Data.Repositories.Interfaces;
 using Productivity.API.Services.Authentication.Base;
 using Productivity.Shared.Models.DTO.PostModels.AccountModels;
 using Productivity.Shared.Models.Entity;
@@ -45,6 +46,17 @@ namespace Productivity.API.Services.Authentication
             };
             await _tokenRepository.AddItem(token, cancellationToken);
             return token.TokenStr;
+        }
+
+        public async Task SignOut(string token, CancellationToken cancellationToken)
+        {
+            var refresh = await _tokenRepository.GetItem(token, cancellationToken,
+                new() { x => x.Account });
+            if (refresh == null)
+            {
+                return;
+            }
+            await _tokenRepository.RemoveItem(refresh.Id, cancellationToken);
         }
     }
 }

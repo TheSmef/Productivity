@@ -25,5 +25,10 @@ namespace Productivity.API.Controllers.DataControllers
         {
             return await base.GetItems(specification, cancellationToken);
         }
+        [AllowAnonymous]
+        public override Task<ActionResult<RegionDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
+        {
+            return base.GetItem(Id, cancellationToken);
+        }
     }
 }
