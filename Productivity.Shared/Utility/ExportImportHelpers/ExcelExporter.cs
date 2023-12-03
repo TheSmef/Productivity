@@ -34,44 +34,39 @@ namespace Productivity.Shared.Utility.ExportImportHelpers
                 {
                     using (XLWorkbook wb = new XLWorkbook(ms))
                     {
-                        try
+                        var worksheet = wb.Worksheet(worksheetname);
+                        var columns = worksheet.FirstRow().Cells().Select((v, i) => new { Value = v.Value, Index = i + 1 });
+                        foreach (var row in worksheet.RowsUsed().Skip(1))
                         {
-                            var worksheet = wb.Worksheet(worksheetname);
-                            var columns = worksheet.FirstRow().Cells().Select((v, i) => new { Value = v.Value, Index = i + 1 });
-                            foreach (var row in worksheet.RowsUsed().Skip(1))
+                            T obj = (T)Activator.CreateInstance(type)!;
+
+                            foreach (var prop in properties)
                             {
-                                T obj = (T)Activator.CreateInstance(type)!;
-
-                                foreach (var prop in properties)
+                                if (!prop.GetCustomAttribute<XLColumnAttribute>()!.Ignore)
                                 {
-                                    if (!prop.GetCustomAttribute<XLColumnAttribute>()!.Ignore)
+                                    int colIndex = columns
+                                        .Single(x => x.Value.ToString() == prop.GetCustomAttribute<XLColumnAttribute>()!.Header).Index;
+                                    var value = row.Cell(colIndex).Value;
+                                    var proptype = prop.PropertyType;
+                                    try
                                     {
-                                        int colIndex = columns
-                                            .Single(x => x.Value.ToString() == prop.GetCustomAttribute<XLColumnAttribute>()!.Header).Index;
-                                        var value = row.Cell(colIndex).Value;
-                                        var proptype = prop.PropertyType;
-                                        try
-                                        {
-                                            prop.SetValue(obj, Convert.ChangeType(value.ToString(), proptype));
-                                        }
-                                        catch { }
+                                        prop.SetValue(obj, Convert.ChangeType(value.ToString(), proptype));
                                     }
+                                    catch { }
                                 }
-                                items.Add(obj);
                             }
+                            items.Add(obj);
                         }
-                        catch
-                        {
-                            throw;
-                        }
-
                     }
                 }
                 return items;
             }
-            catch(FileFormatException ex)
+            catch(Exception ex)
             {
-                throw new DataException(ContextConstants.ParseErrorFile, ex);
+                if (ex is FileFormatException || ex is NotImplementedException)
+                    throw new DataException(ContextConstants.ParseErrorFile, ex);
+                else
+                    throw;
             }
 
         }
