@@ -63,7 +63,8 @@ namespace Productivity.Shared.Utility.ExportImportHelpers
             }
             catch(Exception ex)
             {
-                if (ex is FileFormatException || ex is NotImplementedException)
+                if (ex is FileFormatException || ex is NotImplementedException 
+                    || ex is InvalidOperationException)
                     throw new DataException(ContextConstants.ParseErrorFile, ex);
                 else
                     throw;

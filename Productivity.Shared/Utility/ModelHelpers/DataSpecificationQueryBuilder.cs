@@ -34,14 +34,13 @@ namespace Productivity.Shared.Utility.ModelHelpers
                 return inputQuery.Count();
 
             }
-            catch (ParseException ex)
+            catch (Exception ex)
             {
-                throw new QueryException(ContextConstants.ParseError, ex);
-
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new QueryException(ContextConstants.ParseError, ex);
+                if (ex is ParseException || ex is InvalidOperationException 
+                    || ex is FormatException)
+                    throw new QueryException(ContextConstants.ParseError, ex);
+                else
+                    throw;
             }
         }
 
@@ -85,14 +84,13 @@ namespace Productivity.Shared.Utility.ModelHelpers
                 }
                 return inputQuery;
             }
-            catch (ParseException ex)
+            catch (Exception ex)
             {
-                throw new QueryException(ContextConstants.ParseError, ex);
-
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new QueryException(ContextConstants.ParseError, ex);
+                if (ex is ParseException || ex is InvalidOperationException
+                    || ex is FormatException)
+                    throw new QueryException(ContextConstants.ParseError, ex);
+                else
+                    throw;
             }
         }
     }
