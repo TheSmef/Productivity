@@ -22,7 +22,9 @@ namespace Productivity.Shared.Utility.AutoMapper
                 .ForMember(x => x.CultureId, conf => conf.MapFrom(x => x.Culture.Id))
                 .ForMember(x => x.RegionId, conf => conf.MapFrom(x => x.Region.Id))
                 .ForMember(x => x.Culture, conf => conf.MapFrom(x => x.Culture.Name))
-                .ForMember(x => x.Region, conf => conf.MapFrom(x => x.Region.Name));
+                .ForMember(x => x.Region, conf => conf.MapFrom(x => x.Region.Name))
+                .ForMember(x => x.CostToPlant, conf => conf.MapFrom(x => x.Culture.CostToPlant))
+                .ForMember(x => x.PriceToSell, conf => conf.MapFrom(x => x.Culture.PriceToSell));
             CreateMap<Region, RegionDTO>();
             CreateMap<Culture, CultureDTO>();
 
