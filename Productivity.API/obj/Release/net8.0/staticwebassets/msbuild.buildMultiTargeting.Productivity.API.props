@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Productivity.API.props" />
+</Project>
