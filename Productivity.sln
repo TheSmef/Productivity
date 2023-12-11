@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Productivity.Shared", "Prod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Productivity.API", "Productivity.API\Productivity.API.csproj", "{B0FE8626-0EE8-40C6-9533-5D4013949E36}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7B675D9F-2BC4-4472-94B4-F909F565702A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B0FE8626-0EE8-40C6-9533-5D4013949E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0FE8626-0EE8-40C6-9533-5D4013949E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0FE8626-0EE8-40C6-9533-5D4013949E36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B675D9F-2BC4-4472-94B4-F909F565702A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B675D9F-2BC4-4472-94B4-F909F565702A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B675D9F-2BC4-4472-94B4-F909F565702A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B675D9F-2BC4-4472-94B4-F909F565702A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,77 @@
+name: dockercompose13952247867666555392
+services:
+  mssql:
+    container_name: mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: Pass123!
+    image: mcr.microsoft.com/mssql/server
+    networks:
+      base: null
+    ports:
+    - mode: ingress
+      target: 1433
+      published: "11433"
+      protocol: tcp
+    restart: unless-stopped
+  productivity.api:
+    build:
+      context: C:\Users\User\Documents\GitHub\Productivity
+      dockerfile: Productivity.API/Dockerfile
+    depends_on:
+      mssql:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ASPNETCORE_HTTPS_PORTS: "8081"
+    image: productivityapi
+    networks:
+      base: null
+    ports:
+    - mode: ingress
+      target: 8080
+      protocol: tcp
+    - mode: ingress
+      target: 8080
+      published: "8080"
+      protocol: tcp
+    - mode: ingress
+      target: 8081
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: C:\Users\User\AppData\Roaming/Microsoft/UserSecrets
+      target: /home/app/.microsoft/usersecrets
+      read_only: true
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\User\AppData\Roaming/ASP.NET/Https
+      target: /home/app/.aspnet/https
+      read_only: true
+      bind:
+        create_host_path: true
+  rabbitmq:
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_USER: username
+    image: rabbitmq:management
+    networks:
+      base: null
+    ports:
+    - mode: ingress
+      target: 5672
+      published: "5672"
+      protocol: tcp
+    - mode: ingress
+      target: 15672
+      published: "15672"
+      protocol: tcp
+    restart: unless-stopped
+networks:
+  base:
+    name: dockercompose13952247867666555392_base

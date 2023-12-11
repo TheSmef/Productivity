@@ -1,0 +1,47 @@
+version: '1'
+
+services:
+  productivity.api:
+    container_name: productivity.api
+    image: ${DOCKER_REGISTRY-}productivityapi
+    build:
+      context: .
+      dockerfile: Productivity.API/Dockerfile
+    depends_on:
+      - mssql
+      - rabbitmq
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080 
+    ports:
+      - "8080:8080"
+      - "8081:8081" 
+    networks:
+      - base
+  mssql:
+    image: mcr.microsoft.com/mssql/server
+    container_name: mssql
+    environment:
+      SA_PASSWORD: "Pass123!"
+      ACCEPT_EULA: "Y"
+    restart: unless-stopped
+    ports:
+      - "11433:1433"
+    networks:
+      - base
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=username
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: unless-stopped
+    networks:
+      - base
+networks:
+   base:
