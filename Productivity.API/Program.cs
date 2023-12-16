@@ -39,7 +39,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyHeader()
+        policy.AllowAnyOrigin()
         .WithHeaders(builder.Configuration.GetSection("AppSettings:AllowedHeaders").Value!.Split(','))
         .AllowCredentials().AllowAnyMethod();
     });
