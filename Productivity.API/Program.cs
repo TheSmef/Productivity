@@ -41,7 +41,7 @@ builder.Services.AddCors(options =>
     {
         policy.AllowAnyOrigin()
         .WithHeaders(builder.Configuration.GetSection("AppSettings:AllowedHeaders").Value!.Split(','))
-        .AllowCredentials().AllowAnyMethod();
+        .AllowAnyMethod();
     });
 });
 
