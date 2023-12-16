@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   productivity.api:
@@ -19,6 +19,16 @@ services:
     ports:
       - "8080:8080"
       - "8081:8081" 
+    networks:
+      - base
+  statistic_service:
+    container_name: statistic_service
+    build:
+      context: ./StatisticsAndPrognosisService_python
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
     networks:
       - base
   mssql:
