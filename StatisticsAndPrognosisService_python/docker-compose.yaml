@@ -1,0 +1,32 @@
+version: '4'
+
+services:
+
+  rabbitmq_server:
+    image: 'rabbitmq:3.12-management'
+    environment:
+      RABBITMQ_USERNAME: "username"
+      RABBITMQ_PASSSWORD: "password"
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    networks:
+      - network
+  statistic_service:
+    build: ./
+    restart: always
+    #    environment:
+    #      - AMQP_SERVER_URL=amqp://user:password@localhost:5672
+    environment:
+      RABBITMQ_USERNAME: "username"
+      RABBITMQ_PASSSWORD: "password"
+      RABBITMQ_HOST: rabbitmq_server
+      RABBITMQ_EXCHANGE: "ReportExchange"
+    depends_on:
+      - rabbitmq_server
+    networks:
+      - network
+    ports:
+      - 8000:8000
+networks:
+  network: { }

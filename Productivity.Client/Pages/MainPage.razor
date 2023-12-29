@@ -1,0 +1,155 @@
+﻿@using Productivity.Client.Constants
+@using Productivity.Client.Models
+@using Productivity.Client.Pages.Components
+@using Productivity.Client.Pages.Modal
+@using Productivity.Client.Services.DataServices.Interfaces
+@using Productivity.Client.Utilty
+@using Productivity.Shared.Models.DTO.BrokerModels
+@using Productivity.Shared.Models.DTO.GetModels.CollectionModels
+@using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels
+@using Productivity.Shared.Models.Utility
+
+@page "/"
+
+
+<PageTitle>Урожайность</PageTitle>
+
+<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'">
+    <RadzenHeader>
+        <RadzenRow JustifyContent="JustifyContent.SpaceBetween">
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" Gap="0px">
+                <RadzenSidebarToggle Click="@(() => sidebar = !sidebar)" />
+            </RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0px">
+                <RadzenButton @ref=button Variant="Variant.Text" Size="ButtonSize.Large" Text="Сортировка" ButtonStyle="ButtonStyle.Dark" Click="@(args => popup.ToggleAsync(button.Element))" />
+                <Radzen.Blazor.Rendering.Popup @ref=popup Lazy=true
+                                               Style="display:none;position:absolute;width:300px">
+                    <RadzenStack AlignItems="AlignItems.Center">
+                        <RadzenPanelMenu Style="width:300px">
+                            <ChildContent>
+                                <RadzenPanelMenuItem Text="Сортировать по культурам" Click="@((args) => SetOrder("Culture ASC"))"></RadzenPanelMenuItem>
+                                <RadzenPanelMenuItem Text="Сортировать по регионам" Click="@((args) => SetOrder("Region ASC"))"></RadzenPanelMenuItem>
+                                <RadzenPanelMenuItem Text="Сортировать по урожайности" Click="@((args) => SetOrder("ProductivityValue ASC"))"></RadzenPanelMenuItem>
+                            </ChildContent>
+                        </RadzenPanelMenu>
+                    </RadzenStack>
+
+                </Radzen.Blazor.Rendering.Popup>
+
+                <RadzenButton @ref=insbtn Variant="Variant.Text" Size="ButtonSize.Large" Icon="extension" ButtonStyle="ButtonStyle.Dark" Click="@(args => popupins.ToggleAsync(insbtn.Element))" />
+                <Radzen.Blazor.Rendering.Popup @ref=popupins Lazy=true
+                                               Style="display:none;position:absolute;width:300px">
+                    <RadzenStack AlignItems="AlignItems.Center">
+                        <RadzenPanelMenu Style="width:300px">
+                            <ChildContent>
+                                <RadzenPanelMenuItem Text="Запросить отчёт по урожайности" Click="@OpenProductivityReportModal"></RadzenPanelMenuItem>
+                                <RadzenPanelMenuItem Text="Запросить отчёт по культурам" Click="@OpenCultureReportModal"></RadzenPanelMenuItem>
+                                <hr style="width:100%;text-align:center">
+                                <RadzenPanelMenuItem Text="Статистика культур"></RadzenPanelMenuItem>
+                                <RadzenPanelMenuItem Text="Статистика регионов"></RadzenPanelMenuItem>
+                                <RadzenPanelMenuItem Text="Статистика урожайности"></RadzenPanelMenuItem>
+                            </ChildContent>
+                        </RadzenPanelMenu>
+                    </RadzenStack>
+
+                </Radzen.Blazor.Rendering.Popup>
+            </RadzenStack>
+        </RadzenRow>
+
+    </RadzenHeader>
+    <RadzenSidebar Expanded=sidebar>
+        <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%">
+            <div style="padding: 10px">
+                <RadzenText TextStyle="TextStyle.H6" style="color: var(--rz-text-secondary-color); margin-bottom: 2px" class="rz-display-flex rz-mt-4 rz-mb-0">Фильтрация</RadzenText>
+                <hr style="width:100%;text-align:center">
+                <RadzenFieldset AllowCollapse="true" Collapsed=true>
+                    <HeaderTemplate>
+                        <span class="d-inline-flex align-items-center align-middle">
+                            <b>Урожайность</b>
+                        </span>
+                    </HeaderTemplate>
+                <ChildContent>
+                        <RadzenRow>
+                            <RadzenNumeric TValue="int" Style="width: 45%" Min="0" Max="@(int.MaxValue)" @bind-Value=@(productivitiesRange.Min)/>
+                            <RadzenNumeric TValue="int" Style="width: 45%" Min="0" Max="@(int.MaxValue)" @bind-Value=@(productivitiesRange.Max) />
+                        </RadzenRow>
+                    </ChildContent>
+                </RadzenFieldset>
+                <hr style="width:100%;text-align:center">
+                <RadzenFieldset AllowCollapse="true" Collapsed=true>
+                    <HeaderTemplate>
+                        <span class="d-inline-flex align-items-center align-middle">
+                            <b>Год</b>
+                        </span>
+                    </HeaderTemplate>
+                    <ChildContent>
+                        <RadzenRow>
+                            <RadzenNumeric TValue="int" Style="width: 45%" Min="1992" Max="@(DateTime.Today.Year)" @bind-Value=@(years.Min) />
+                            <RadzenNumeric TValue="int" Style="width: 45%" Min="1992" Max="@(DateTime.Today.Year)" @bind-Value=@(years.Max) />
+                        </RadzenRow>
+                    </ChildContent>
+                </RadzenFieldset>
+                <hr style="width:100%;text-align:center">
+                <RadzenFieldset AllowCollapse="true" Collapsed=true>
+                    <HeaderTemplate>
+                        <span class="d-inline-flex align-items-center align-middle">
+                            <b>Регион</b>
+                        </span>
+                    </HeaderTemplate>
+                    <ChildContent>
+                        <RadzenRow>
+                            <RadzenDropDown @bind-Value=@selectedRegions Data=@(regions.Collection.Select(x => x.Name)) PageSize=10 LoadData=SetRegionQuery SelectedItemsText="Элементов выбрано"
+                                            Multiple=true AllowClear=true AllowFiltering=true AllowSelectAll=false Placeholder="Выбрать регион" Chips=true Style="width: 100%; max-width: 400px" />
+                        </RadzenRow>
+                    </ChildContent>
+                </RadzenFieldset>
+                <hr style="width:100%;text-align:center">
+                <RadzenFieldset AllowCollapse="true" Collapsed=true>
+                    <HeaderTemplate>
+                        <span class="d-inline-flex align-items-center align-middle">
+                            <b>Культуры</b>
+                        </span>
+                    </HeaderTemplate>
+                    <ChildContent>
+                        <RadzenRow>
+                            <RadzenDropDown @bind-Value=@selectedCultures LoadData=SetCultureQuery Data=@(cultures.Collection.Select(x => x.Name)) PageSize=10 SelectedItemsText="Элементов выбрано"
+                                            Multiple=true AllowClear=true AllowFiltering=true AllowSelectAll=false Placeholder="Выбрать культуру" Chips=true Style="width: 100%; max-width: 400px" />
+                        </RadzenRow>
+                    </ChildContent>
+                </RadzenFieldset>
+                <hr style="width:100%;text-align:center">
+            </div>
+            <div>
+                <RadzenButton @ref=button Variant="Variant.Text" Size="ButtonSize.Medium" Style="width: 100%" Text="Применить" Click=SetProductivityParams ButtonStyle="ButtonStyle.Light" />
+                <hr style="width:100%;text-align:center">
+            </div>
+        </RadzenStack>
+    </RadzenSidebar>
+    <RadzenBody>
+        <RadzenDataList @ref=prodList Data="@(productivities.Collection)" TItem="ProductivityDTO" Count="@(productivities.ElementsCount)"
+                        PagingSummaryFormat="@(PageConstants.SummatyFormat)" LoadData="(args) => SetProductivityQuery(args)"
+                        PagerHorizontalAlign="HorizontalAlign.Center" ShowPagingSummary="true" AllowPaging=true PageSize=10>
+            <Template Context="item">
+                <RadzenCard class="rz-shadow-0 rz-border-radius-0 rz-p-8" style="width: 80%">
+                    <RadzenRow RowGap="0">
+                        <RadzenColumn>
+                            <RadzenText TextStyle="TextStyle.Overline"  class="rz-display-flex rz-mt-4 rz-mb-0">Культура</RadzenText>
+                            <RadzenText TextStyle="TextStyle.DisplayH6"><b>@(item.Culture)</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Overline" class=" rz-display-flex rz-mt-4 rz-mb-0">Область</RadzenText>
+                            <RadzenText TextStyle="TextStyle.DisplayH6" class=""><b>@(item.Region)</b></RadzenText>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <RadzenText TextStyle="TextStyle.Overline" class="rz-display-flex rz-mt-4 rz-mb-0">Год</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1"><b>@(item.Year)</b></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Overline" class=" rz-display-flex rz-mt-4 rz-mb-0">Значение урожайности</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1"><b>@(item.ProductivityValue)</b></RadzenText>
+                        </RadzenColumn>
+                    </RadzenRow>
+                </RadzenCard>
+            </Template>
+        </RadzenDataList>
+    </RadzenBody>
+</RadzenLayout>
+
+
+

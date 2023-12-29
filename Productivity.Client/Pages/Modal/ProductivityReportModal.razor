@@ -1,0 +1,78 @@
+﻿@using Productivity.Client.Constants
+@using Productivity.Client.Pages.Components
+@using Productivity.Client.Services.DataServices.Interfaces
+@using Productivity.Client.Services.ReportServices.Interfaces
+@using Productivity.Shared.Models.DTO.BrokerModels
+@using Productivity.Shared.Models.DTO.GetModels.CollectionModels
+@using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels
+@using Productivity.Shared.Models.Utility
+<RadzenContent Container="main">
+    <ChildContent>
+
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTemplateForm Data="@model" TItem="@ProductivityReportModel" Submit="Handle">
+                    <ChildContent>
+                        <DataAnnotationsValidator />
+                        <div style="margin-bottom: 1rem" class="flex-column">
+                            <div>
+                                <RadzenLabel Text="Электронная почта" style="width: 100%">
+                                </RadzenLabel>
+                            </div>
+                            <div>
+                                <RadzenTextBox MaxLength="255" style="display: block; width: 100%" @bind-Value="@(model.Email)">
+                                </RadzenTextBox>
+                                <ValidationMessage For="@(() => model.Email)" />
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem" class="flex-column">
+                            <div>
+                                <RadzenLabel Text="Культура" style="width: 100%">
+                                </RadzenLabel>
+                            </div>
+                            <div>
+                                <RadzenDropDown @bind-Value=@(model.CultureId) LoadData=SetCultureQuery Data=@(cultures.Collection) ValueProperty="Id" TextProperty="Name" PageSize=10
+                                                AllowFiltering=true AllowSelectAll=false Placeholder="Выбрать культуру" Chips=true Style="width: 100%" />
+                                <ValidationMessage For="@(() => model.CultureId)" />
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem" class="flex-column">
+                            <div>
+                                <RadzenLabel Text="Регион" style="width: 100%">
+                                </RadzenLabel>
+                            </div>
+                            <div>
+                                <RadzenDropDown @bind-Value=@(model.RegionId) LoadData=SetRegionQuery Data=@(regions.Collection) ValueProperty="Id" TextProperty="Name" PageSize=10
+                                                AllowFiltering=true AllowSelectAll=false Placeholder="Выбрать регион" Style="width: 100%" />
+                                <ValidationMessage For="@(() => model.RegionId)" />
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem" class="flex-column">
+                            <div>
+                                <RadzenLabel Text="Год" style="width: 100%">
+                                </RadzenLabel>
+                            </div>
+                            <div>
+                                <RadzenDropDown @bind-Value=@(model.Year) Data=@(years) PageSize=10
+                                                Placeholder="Выбрать год" Style="width: 100%" />
+                                <ValidationMessage For="@(() => model.Year)" />
+                            </div>
+                        </div>
+                        <hr style="width:100%;text-align:center">
+                        <div class="row footer">
+                            <div>
+                                <RadzenButton ButtonType="ButtonType.Submit" Icon="assignment" Text="Заказать отчёт" ButtonStyle="ButtonStyle.Primary">
+                                </RadzenButton>
+                                <RadzenButton ButtonType="ButtonType.Button" Text="Закрыть" ButtonStyle="ButtonStyle.Danger" Click="@Close">
+                                </RadzenButton>
+                            </div>
+                        </div>
+                    </ChildContent>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenContent>
+
+
+
