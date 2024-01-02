@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using LanguageExt;
+using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
 using Productivity.Shared.Models.DTO.GetModels.CollectionModels;
@@ -9,6 +12,7 @@ using Productivity.Shared.Models.DTO.PostModels.DataModels;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ModelHelpers;
 using System.Linq.Dynamic.Core.Exceptions;
@@ -28,10 +32,16 @@ namespace Productivity.API.Services.Data.Base
             _mapper = mapper;
         }
 
-        public virtual async Task AddItem(TPostDTO record, CancellationToken cancellationToken)
+        public virtual async Task<Result<TDTO>> AddItem(TPostDTO record, CancellationToken cancellationToken)
         {
             TEntity item = _mapper.Map<TEntity>(record);
-            await _repository.AddItem(item, cancellationToken);
+            var result = await _repository.Validate(item, cancellationToken);
+            if (!result.IsNullOrEmpty())
+            {
+                return new Result<TDTO>(new DataException(result, ContextConstants.ValidationErrorTitle));
+            }
+            item = await _repository.AddItem(item, cancellationToken);
+            return _mapper.Map<TDTO>(item);
         }
 
         public virtual async Task<TDTO?> GetItem(Guid Id, CancellationToken cancellationToken)
@@ -45,23 +55,36 @@ namespace Productivity.API.Services.Data.Base
             return record;
         }
 
-        public virtual async Task<CollectionDTO<TDTO>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
+        public virtual async Task<Result<CollectionDTO<TDTO>>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
         {
             var query = _mapper.ProjectTo<TDTO>(_repository.GetItems(cancellationToken).AsNoTracking());
-            CollectionDTO<TDTO> responce = await ResponceModelBuilder.Build(specification, query, cancellationToken);
-            return responce;
+            return await ResponceModelBuilder.Build(specification, query, cancellationToken);
         }
 
-        public async Task RemoveItem(Guid Id, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> RemoveItem(Guid Id, CancellationToken cancellationToken)
         {
+            var result = await _repository.CanBeDeleted(Id, cancellationToken);
+            if (result.IsFaulted)
+            {
+                return result;
+            }
             await _repository.RemoveItem(Id, cancellationToken);
+            return Unit.Default;
         }
 
-        public virtual async Task UpdateItem(Guid Id, TPostDTO record, CancellationToken cancellationToken)
+        public virtual async Task<Result<TDTO>> UpdateItem(Guid Id, TPostDTO record, CancellationToken cancellationToken)
         {
             TEntity item = _mapper.Map<TEntity>(record);
             item.Id = Id;
-            await _repository.UpdateItem(item, cancellationToken);
+            var result = await _repository.Validate(item, cancellationToken);
+            if (!result.IsNullOrEmpty())
+            {
+                return new Result<TDTO>(new DataException(result, ContextConstants.ValidationErrorTitle));
+            }
+            var responce = await _repository.UpdateItem(item, cancellationToken);
+            return responce.Match(
+                succ => _mapper.Map<TDTO>(succ), 
+                err => new Result<TDTO>(err));
         }
     }
 }

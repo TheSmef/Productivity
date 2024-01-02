@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Drawing;
+using LanguageExt.Common;
 using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
@@ -10,7 +11,7 @@ namespace Productivity.Shared.Utility.ModelHelpers
     public static class DataSpecificationQueryBuilder
     {
 
-        public static int GetQueryCount(
+        public static Result<int> GetQueryCount(
                 QuerySupporter specificaion,
                 IQueryable inputQuery)
         {
@@ -38,7 +39,7 @@ namespace Productivity.Shared.Utility.ModelHelpers
             {
                 if (ex is ParseException || ex is InvalidOperationException 
                     || ex is FormatException)
-                    throw new QueryException(ContextConstants.ParseError, ex);
+                    return new Result<int>(new QueryException(ContextConstants.ParseError, ex));
                 else
                     throw;
             }
@@ -56,7 +57,7 @@ namespace Productivity.Shared.Utility.ModelHelpers
             return inputQuery;
         }
 
-        public static IQueryable<T> GetQuery<T>(
+        public static Result<IQueryable<T>> GetQuery<T>(
                 QuerySupporter specificaion,
                 IQueryable<T> inputQuery)
         {
@@ -82,13 +83,13 @@ namespace Productivity.Shared.Utility.ModelHelpers
                 {
                     inputQuery = inputQuery.Take(specificaion.Top);
                 }
-                return inputQuery;
+                return new Result<IQueryable<T>>(inputQuery);
             }
             catch (Exception ex)
             {
                 if (ex is ParseException || ex is InvalidOperationException
                     || ex is FormatException)
-                    throw new QueryException(ContextConstants.ParseError, ex);
+                    return new Result<IQueryable<T>>(new QueryException(ContextConstants.ParseError, ex));
                 else
                     throw;
             }

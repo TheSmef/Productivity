@@ -29,6 +29,7 @@ namespace Productivity.Shared.Utility.AutoMapper
             CreateMap<Culture, CultureDTO>();
 
             CreateMap<AccountPostDTO, Account>();
+            CreateMap<AccountPatchDTO, Account>();
             CreateMap<CulturePostDTO, Culture>();
             CreateMap<RegionPostDTO, Region>();
             CreateMap<ProductivityPostDTO, Models.Entity.Productivity>()

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Productivity.Shared.Models.Utility.ErrorModels;
 using Productivity.Shared.Utility.Exceptions;
+using Productivity.Shared.Utility.Exceptions.Handlers;
 
 namespace Productivity.API.Services.Middleware
 {
@@ -8,22 +9,7 @@ namespace Productivity.API.Services.Middleware
     {
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            ErrorModel responce = exception switch
-            {
-                QueryException => new ErrorModel() { 
-                    Status = 400, 
-                    Message = exception.Message, 
-                    Errors = new() },
-                DataException => new ErrorModel() { 
-                    Status = 400, 
-                    Message = exception.Message, 
-                    Errors = ((DataException)exception).Errors },
-                BrokerException => new ErrorModel() {
-                    Status = 400,
-                    Message = exception.Message,
-                    Errors = new() },
-                _ => new ErrorModel()
-            };
+            ErrorModel responce = ExceptionMapper.MapForHandler(exception);
             if (responce.Status == -1)
             {
                 return false;

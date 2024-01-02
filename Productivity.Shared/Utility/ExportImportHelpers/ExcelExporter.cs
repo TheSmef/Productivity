@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Attributes;
 using ClosedXML.Excel;
+using LanguageExt.Common;
 using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
 using System.Reflection;
@@ -23,7 +24,7 @@ namespace Productivity.Shared.Utility.ExportImportHelpers
             }
         }
 
-        public static List<T> GetImportModel<T>(byte[] array, string worksheetname)
+        public static Result<List<T>> GetImportModel<T>(byte[] array, string worksheetname)
         {
             try
             {
@@ -63,9 +64,9 @@ namespace Productivity.Shared.Utility.ExportImportHelpers
             }
             catch(Exception ex)
             {
-                if (ex is FileFormatException || ex is NotImplementedException 
+                if (ex is FileFormatException || ex is NotImplementedException
                     || ex is InvalidOperationException)
-                    throw new DataException(ContextConstants.ParseErrorFile, ex);
+                    return new Result<List<T>>(new DataException(ContextConstants.ParseErrorFile, ex));
                 else
                     throw;
             }

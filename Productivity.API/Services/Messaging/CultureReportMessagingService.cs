@@ -9,6 +9,8 @@ using System.Text.Json;
 using Productivity.API.Data.Repositories.Interfaces;
 using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.Constants;
+using LanguageExt.Common;
+using LanguageExt;
 
 namespace Productivity.API.Services.Messaging
 {
@@ -16,18 +18,19 @@ namespace Productivity.API.Services.Messaging
     {
         private readonly IRegionRepository _repository;
         public CultureReportMessagingService(IRabbitMqService service, IRegionRepository repository)
-            : base(service, "CultureQueue", "ReportExchange", "culture", ExchangeType.Direct)
+            : base(service, ContextConstants.CultureQueue, ContextConstants.ReportExchange,
+                  ContextConstants.CultureRoutingKey, ExchangeType.Direct)
         {
             _repository = repository;
         }
 
-        public async override Task SendRequest(CultureReportModel request, CancellationToken cancellationToken)
+        public async override Task<Result<Unit>> SendRequest(CultureReportModel request, CancellationToken cancellationToken)
         {
             if (!await _repository.Exists(request.RegionId))
             {
-                throw new QueryException(ContextConstants.RegionNotFound);
+                return new Result<Unit>(new QueryException(ContextConstants.RegionNotFound));
             }
-            await base.SendRequest(request, cancellationToken);
+            return await base.SendRequest(request, cancellationToken);
         }
     }
 }

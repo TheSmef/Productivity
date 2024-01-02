@@ -15,7 +15,6 @@ namespace Productivity.API.Services.Data
 {
     public class RegionService : BaseDataService<Region, RegionDTO, RegionPostDTO>, IRegionService
     {
-
         public RegionService(IRegionRepository repository, IMapper mapper) : base(repository, mapper) { }
     }
 }

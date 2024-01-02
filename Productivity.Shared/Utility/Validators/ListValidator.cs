@@ -1,4 +1,6 @@
-﻿using Productivity.Shared.Utility.Exceptions;
+﻿using LanguageExt;
+using LanguageExt.Common;
+using Productivity.Shared.Utility.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,23 +12,24 @@ namespace Productivity.Shared.Utility.Validators
 {
     public static class ListValidator
     {
-        public static void Validate<T>(List<T> items)
+        public static Result<Unit> Validate<T>(List<T> items)
             where T : class
         {
-            foreach (var item in items)
+            for (int i = 0; i < items.Count; i++)
             {
-                if (item == null)
+                if (items[i] == null)
                 {
-                    throw new DataException($"Пустой элемент на строке {items.FindIndex(x => x == null)}");
+                    return new Result<Unit>(new DataException($"Пустой элемент на строке {i + 1}"));
                 }
                 ValidationContext validationContext
-                        = new ValidationContext(item);
+                        = new ValidationContext(items[i]);
                 List<ValidationResult> results = new();
-                if (!Validator.TryValidateObject(item, validationContext, results, true))
+                if (!Validator.TryValidateObject(items[i], validationContext, results, true))
                 {
-                    throw new DataException(results.Select(x => x.ErrorMessage).ToList(), $"Ошибка на строке {items.FindIndex(x => x == item) + 1}");
+                    return new Result<Unit>(new DataException(results.Select(x => x.ErrorMessage).ToList(), $"Ошибка на строке {i + 1}"));
                 }
             }
+            return Unit.Default;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.IdentityModel.Tokens;
 using Productivity.API.Data.Context;
 using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
@@ -21,11 +23,11 @@ namespace Productivity.API.Data.Repositories.Base
             _context = context;
         }
 
-        public virtual async Task AddItem(TEntity record, CancellationToken cancellationToken)
+        public virtual async Task<TEntity> AddItem(TEntity record, CancellationToken cancellationToken)
         {
-            await this.Validate(record, cancellationToken);
             _context.Set<TEntity>().Add(record);
             await _context.SaveChangesAsync(cancellationToken);
+            return record;
         }
 
         public virtual async Task AddRange(ICollection<TEntity> records, CancellationToken cancellationToken)
@@ -34,9 +36,9 @@ namespace Productivity.API.Data.Repositories.Base
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public abstract Task<List<string?>> CheckValidate(TEntity record, CancellationToken cancellationToken);
+        public abstract Task<List<string?>> Validate(TEntity record, CancellationToken cancellationToken);
 
-        public abstract List<string?> CheckValidateCollection(TEntity record, ICollection<TEntity> records);
+        public abstract List<string?> ValidateCollection(TEntity record, ICollection<TEntity> records);
 
         public abstract Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
 
@@ -90,17 +92,23 @@ namespace Productivity.API.Data.Repositories.Base
             }
         }
 
-        public virtual async Task UpdateItem(TEntity record, CancellationToken cancellationToken)
+        public virtual async Task<Result<TEntity>> UpdateItem(TEntity record, CancellationToken cancellationToken)
         {
             if (!_context.Set<TEntity>().Any(x => x.Id == record.Id))
             {
-                throw new QueryException(ContextConstants.NotFoundError);
+                return new Result<TEntity>(new QueryException(ContextConstants.NotFoundError));
             }
-            await this.Validate(record, cancellationToken);
             _context.Set<TEntity>().Update(record);
             await _context.SaveChangesAsync(cancellationToken);
+            return record;
         }
 
-        public abstract Task Validate(TEntity record, CancellationToken cancellationToken);
+        public abstract Task<Result<LanguageExt.Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken);
+
+        public async Task<TEntity?> GetItemWithoutTracking(Guid Id, CancellationToken cancellationToken)
+        {
+            return await _context.Set<TEntity>().AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+        }
     }
 }

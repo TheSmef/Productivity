@@ -1,10 +1,12 @@
-﻿using Productivity.Shared.Models.DTO.BrokerModels.Base;
+﻿using LanguageExt;
+using LanguageExt.Common;
+using Productivity.Shared.Models.DTO.BrokerModels.Base;
 
 namespace Productivity.API.Services.Messaging.Base
 {
     public interface IMessagingService<T>
         where T : BaseReportModel
     {
-        public Task SendRequest(T request, CancellationToken cancellationToken);
+        public Task<Result<Unit>> SendRequest(T request, CancellationToken cancellationToken);
     }
 }

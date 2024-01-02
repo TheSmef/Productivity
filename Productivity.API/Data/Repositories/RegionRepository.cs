@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LanguageExt;
+using LanguageExt.Common;
+using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Context;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -16,7 +18,7 @@ namespace Productivity.API.Data.Repositories
     {
         public RegionRepository(DataContext context) : base(context) { }
 
-        public override async Task<List<string?>> CheckValidate(Region record, CancellationToken cancellationToken)
+        public override async Task<List<string?>> Validate(Region record, CancellationToken cancellationToken)
         {
             List<string?> result = new();
             if (await _context.Regions.AnyAsync(x => x.Name == record.Name && x.Id != record.Id,
@@ -27,10 +29,10 @@ namespace Productivity.API.Data.Repositories
             return result;
         }
 
-        public override List<string?> CheckValidateCollection(Region record, ICollection<Region> records)
+        public override List<string?> ValidateCollection(Region record, ICollection<Region> records)
         {
             List<string?> result = new();
-            if (records.Where(x => x.Name == record.Name).Count() > 1)
+            if (records.Any(x => x.Name == record.Name))
             {
                 result.Add(ContextConstants.RegionUNErrorCollection);
             }
@@ -48,13 +50,13 @@ namespace Productivity.API.Data.Repositories
             return record;
         }
 
-        public override async Task Validate(Region record, CancellationToken cancellationToken)
+        public override async Task<Result<LanguageExt.Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
         {
-            if (await _context.Regions.AnyAsync(x => x.Name == record.Name && x.Id != record.Id,
-                    cancellationToken))
+            if (await _context.Productivities.Where(x => x.Region.Id == id).AnyAsync(cancellationToken))
             {
-                throw new DataException(ContextConstants.RegionUNError);
+                return new Result<Unit>(new DataException(ContextConstants.CannotBeDeleted));
             }
+            return Unit.Default;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using LanguageExt.Common;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -24,23 +26,28 @@ namespace Productivity.API.Services.Data
             _cultureRepository = cultureRepository;
         }
 
-        public override async Task AddItem(ProductivityPostDTO record, CancellationToken cancellationToken)
+        public override async Task<Result<ProductivityDTO>> AddItem(ProductivityPostDTO record, CancellationToken cancellationToken)
         {
             Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
             var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
             if (culture == null)
             {
-                throw new QueryException(ContextConstants.CultureNotFound);
+                return new Result<ProductivityDTO>(new QueryException(ContextConstants.CultureNotFound));
             }
             item.Culture = culture;
             var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
             if (region == null)
             {
-                throw new QueryException(ContextConstants.RegionNotFound);
+                return new Result<ProductivityDTO>(new QueryException(ContextConstants.RegionNotFound));
             }
             item.Region = region;
-
-            await _repository.AddItem(item, cancellationToken);
+            var result = await _repository.Validate(item, cancellationToken);
+            if (!result.IsNullOrEmpty())
+            {
+                return new Result<ProductivityDTO>(new DataException(result, ContextConstants.ValidationErrorTitle));
+            }
+            item = await _repository.AddItem(item, cancellationToken);
+            return _mapper.Map<ProductivityDTO>(item);
         }
 
         public override async Task<ProductivityDTO?> GetItem(Guid Id, CancellationToken cancellationToken)
@@ -55,23 +62,31 @@ namespace Productivity.API.Services.Data
             return record;
         }
 
-        public override async Task UpdateItem(Guid Id, ProductivityPostDTO record, CancellationToken cancellationToken)
+        public override async Task<Result<ProductivityDTO>> UpdateItem(Guid Id, ProductivityPostDTO record, CancellationToken cancellationToken)
         {
             Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
             var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
             if (culture == null)
             {
-                throw new QueryException(ContextConstants.CultureNotFound);
+                return new Result<ProductivityDTO>(new QueryException(ContextConstants.CultureNotFound));
             }
             item.Culture = culture;
             var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
             if (region == null)
             {
-                throw new QueryException(ContextConstants.RegionNotFound);
+                return new Result<ProductivityDTO>(new QueryException(ContextConstants.RegionNotFound));
             }
             item.Region = region;
             item.Id = Id;
-            await _repository.UpdateItem(item, cancellationToken);
+            var result = await _repository.Validate(item, cancellationToken);
+            if (!result.IsNullOrEmpty())
+            {
+                return new Result<ProductivityDTO>(new DataException(result, ContextConstants.ValidationErrorTitle));
+            }
+            var responce = await _repository.UpdateItem(item, cancellationToken);
+            return responce.Match(
+                succ => _mapper.Map<ProductivityDTO>(succ),
+                err => new Result<ProductivityDTO>(err));
         }
     }
 }

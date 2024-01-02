@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LanguageExt.Common;
+using LanguageExt;
+using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Context;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -16,7 +18,7 @@ namespace Productivity.API.Data.Repositories
     {
         public ProductivityRepository(DataContext context) : base(context) { }
 
-        public override async Task<List<string?>> CheckValidate(Shared.Models.Entity.Productivity record, CancellationToken cancellationToken)
+        public override async Task<List<string?>> Validate(Shared.Models.Entity.Productivity record, CancellationToken cancellationToken)
         {
             List<string?> result = new();
             if (await _context.Productivities.AnyAsync(x => x.Culture == record.Culture
@@ -28,11 +30,11 @@ namespace Productivity.API.Data.Repositories
             return result;
         }
 
-        public override List<string?> CheckValidateCollection(Shared.Models.Entity.Productivity record, ICollection<Shared.Models.Entity.Productivity> records)
+        public override List<string?> ValidateCollection(Shared.Models.Entity.Productivity record, ICollection<Shared.Models.Entity.Productivity> records)
         {
             List<string?> result = new();
-            if (records.Where(x => x.Culture == record.Culture
-                && x.Region == record.Region && x.Year == record.Year).Count() > 1)
+            if (records.Any(x => x.Culture == record.Culture
+                && x.Region == record.Region && x.Year == record.Year))
             {
                 result.Add(ContextConstants.ProductivityUNErrorCollection);
             }
@@ -52,14 +54,9 @@ namespace Productivity.API.Data.Repositories
             return record;
         }
 
-        public override async Task Validate(Shared.Models.Entity.Productivity record, CancellationToken cancellationToken)
+        public override Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
         {
-            if (await _context.Productivities.AnyAsync(x => x.Culture == record.Culture
-            && x.Region == record.Region && x.Year == record.Year && x.Id != record.Id,
-                   cancellationToken))
-            {
-                throw new DataException(ContextConstants.ProductivityUNError);
-            }
+            return Task.FromResult(new Result<Unit>(Unit.Default));
         }
     }
 }

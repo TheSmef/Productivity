@@ -1,4 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using LanguageExt.Common;
+using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Context;
 using Productivity.API.Data.Repositories.Base;
@@ -17,7 +19,7 @@ namespace Productivity.API.Data.Repositories
     {
         public TokenRepository(DataContext context) : base(context) { }
 
-        public override async Task<List<string?>> CheckValidate(Token record, CancellationToken cancellationToken)
+        public override async Task<List<string?>> Validate(Token record, CancellationToken cancellationToken)
         {
             List<string?> result = new();
             if (await _context.Tokens.AnyAsync(x => x.TokenStr == record.TokenStr && x.Id != record.Id,
@@ -28,10 +30,10 @@ namespace Productivity.API.Data.Repositories
             return result;
         }
 
-        public override List<string?> CheckValidateCollection(Token record, ICollection<Token> records)
+        public override List<string?> ValidateCollection(Token record, ICollection<Token> records)
         {
             List<string?> result = new();
-            if (records.Where(x => x.TokenStr == record.TokenStr).Count() > 1)
+            if (records.Any(x => x.TokenStr == record.TokenStr))
             {
                 result.Add(ContextConstants.TokenUNErrorCollection);
             }
@@ -67,13 +69,9 @@ namespace Productivity.API.Data.Repositories
                 .FirstOrDefaultAsync(x => x.TokenStr == token, cancellationToken);
         }
 
-        public override async Task Validate(Token record, CancellationToken cancellationToken)
+        public override Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
         {
-            if (await _context.Tokens.AnyAsync(x => x.TokenStr == record.TokenStr && x.Id != record.Id,
-                    cancellationToken))
-            {
-                throw new DataException(ContextConstants.TokenUNError);
-            }
+            return Task.FromResult(new Result<Unit>(Unit.Default));
         }
     }
 }

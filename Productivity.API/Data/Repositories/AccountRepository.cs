@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LanguageExt;
+using LanguageExt.Common;
+using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Context;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -32,7 +34,7 @@ namespace Productivity.API.Data.Repositories
             return null;
         }
 
-        public override async Task<List<string?>> CheckValidate(Account record, CancellationToken cancellationToken)
+        public override async Task<List<string?>> Validate(Account record, CancellationToken cancellationToken)
         {
             List<string?> result = new();
             if (await _context.Accounts.AnyAsync(x => x.Email == record.Email && x.Id != record.Id,
@@ -48,14 +50,14 @@ namespace Productivity.API.Data.Repositories
             return result;
         }
 
-        public override List<string?> CheckValidateCollection(Account record, ICollection<Account> records)
+        public override List<string?> ValidateCollection(Account record, ICollection<Account> records)
         {
             List<string?> result = new();
-            if (records.Where(x => x.Email == record.Email).Count() > 1)
+            if (records.Any(x => x.Email == record.Email))
             {
                 result.Add(ContextConstants.AccountUNEmailErrorCollection);
             }
-            if (records.Where(x => x.Login == record.Login).Count() > 1)
+            if (records.Any(x => x.Login == record.Login))
             {
                 result.Add(ContextConstants.AccountUNLoginErrorCollection);
             }
@@ -73,18 +75,9 @@ namespace Productivity.API.Data.Repositories
             return record;
         }
 
-        public override async Task Validate(Account record, CancellationToken cancellationToken)
+        public override Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
         {
-            if (await _context.Accounts.AnyAsync(x => x.Email == record.Email && x.Id != record.Id,
-                cancellationToken))
-            {
-                throw new DataException(ContextConstants.AccountUNEmailError);
-            }
-            if (await _context.Accounts.AnyAsync(x => x.Login == record.Login && x.Id != record.Id,
-                cancellationToken))
-            {
-                throw new DataException(ContextConstants.AccountUNLoginError);
-            }
+            return Task.FromResult(new Result<Unit>(Unit.Default));
         }
     }
 }

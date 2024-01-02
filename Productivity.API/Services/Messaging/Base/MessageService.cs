@@ -4,6 +4,8 @@ using RabbitMQ.Client;
 using System.Text.Json;
 using System.Text;
 using Productivity.Shared.Models.DTO.BrokerModels.Base;
+using LanguageExt.Common;
+using LanguageExt;
 
 namespace Productivity.API.Services.Messaging.Base
 {
@@ -27,14 +29,14 @@ namespace Productivity.API.Services.Messaging.Base
         }
 
 
-        public virtual Task SendRequest(T request, CancellationToken cancellationToken)
+        public virtual Task<Result<Unit>> SendRequest(T request, CancellationToken cancellationToken)
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request));
             _model.BasicPublish(_exchange,
                                  _routingKey,
                                  basicProperties: null,
                                  body: body);
-            return Task.CompletedTask;
+            return Task.FromResult(new Result<Unit>(Unit.Default));
         }
     }
 }

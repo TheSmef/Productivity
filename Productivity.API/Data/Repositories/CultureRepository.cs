@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LanguageExt.Common;
+using LanguageExt;
+using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Context;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -13,7 +15,7 @@ namespace Productivity.API.Data.Repositories
     {
         public CultureRepository(DataContext context) : base(context) { }
 
-        public override async Task<List<string?>> CheckValidate(Culture record, CancellationToken cancellationToken)
+        public override async Task<List<string?>> Validate(Culture record, CancellationToken cancellationToken)
         {
             List<string?> result = new();
             if (await _context.Cultures.AnyAsync(x => x.Name == record.Name && x.Id != record.Id,
@@ -24,10 +26,10 @@ namespace Productivity.API.Data.Repositories
             return result;
         }
 
-        public override List<string?> CheckValidateCollection(Culture record, ICollection<Culture> records)
+        public override List<string?> ValidateCollection(Culture record, ICollection<Culture> records)
         {
             List<string?> result = new();
-            if (records.Where(x => x.Name == record.Name).Count() > 1)
+            if (records.Any(x => x.Name == record.Name))
             {
                 result.Add(ContextConstants.CultureUNErrorCollection);
             }
@@ -45,13 +47,13 @@ namespace Productivity.API.Data.Repositories
             return record;
         }
 
-        public override async Task Validate(Culture record, CancellationToken cancellationToken)
+        public override async Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
         {
-            if (await _context.Cultures.AnyAsync(x => x.Name == record.Name && x.Id != record.Id,
-                    cancellationToken))
+            if (await _context.Productivities.Where(x => x.Culture.Id == id).AnyAsync(cancellationToken))
             {
-                throw new DataException(ContextConstants.CultureUNError);
+                return new Result<Unit>(new DataException(ContextConstants.CannotBeDeleted));
             }
+            return Unit.Default;
         }
     }
 }

@@ -27,11 +27,25 @@
         public const string TokenUNErrorCollection = "Данный токен уже существует в коллекции";
 
 
+        public const string CannotBeDeleted = "Элемент не может быть удалён, так как имеет дочерние элементы";
+
         public const string ParseError = "Ошибка при обработке строки запроса";
         public const string ParseErrorFile = "Ошибка при обработке файла";
         public const string NotFoundError = "Запись не существует";
         public const string ShortageOfData = "Недостаточно записей для обработки";
 
         public const string NoConnectionToBroker = "Связь с брокером отсутствует";
+
+        public const string ValidationErrorTitle = "Ошибка валидации";
+
+
+
+
+        public const string ProductivityQueue = "ProductivityQueue";
+        public const string ReportExchange = "ReportExchange";
+        public const string ProductivityRoutingKey = "productivity";
+
+        public const string CultureQueue = "CultureQueue";
+        public const string CultureRoutingKey = "culture";
     }
 }

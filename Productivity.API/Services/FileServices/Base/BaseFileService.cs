@@ -14,6 +14,9 @@ using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.Validators;
 using Productivity.Shared.Utility.ModelHelpers;
 using System.Linq.Dynamic.Core.Exceptions;
+using Microsoft.IdentityModel.Tokens;
+using LanguageExt.Common;
+using LanguageExt;
 
 namespace Productivity.API.Services.FileServices.Base
 {
@@ -33,34 +36,55 @@ namespace Productivity.API.Services.FileServices.Base
             _worksheet = worksheet;
         }
 
-        public async Task<FileModel> ExportItems(QuerySupporter specification, CancellationToken cancellationToken)
+        public async Task<Result<FileModel>> ExportItems(QuerySupporter specification, CancellationToken cancellationToken)
         {
-            var items = DataSpecificationQueryBuilder.GetQuery(specification,
+            var itemsresult = DataSpecificationQueryBuilder.GetQuery(specification,
                 _mapper.ProjectTo<TFileModel>(_repository.GetItems(cancellationToken)));
+            if (itemsresult.IsFaulted)
+            {
+                Exception exception = default!;
+                itemsresult.IfFail(ex => exception = ex);
+                return new Result<FileModel>(exception);
+            }
+            var items = Enumerable.Empty<TFileModel>().AsQueryable();
+            itemsresult.IfSucc(succ => items = succ);
             var file = ExcelExporter.GetExcelReport(await items.ToListAsync(cancellationToken), _worksheet);
             return new FileModel() { Data = file, Name = $"{_worksheet}_{DateTime.Today.ToShortDateString()}" };
         }
 
-        public virtual async Task ImportItems(byte[] bytes, CancellationToken cancellationToken)
+        public virtual async Task<Result<Unit>> ImportItems(byte[] bytes, CancellationToken cancellationToken)
         {
-            var items = ExcelExporter.GetImportModel<TFileModel>(bytes, _worksheet);
-            var itemsToAdd = new List<TEntity>();
-            ListValidator.Validate(items);
-            foreach (var item in items)
+            var itemsresult = ExcelExporter.GetImportModel<TFileModel>(bytes, _worksheet);
+            if (itemsresult.IsFaulted)
             {
-                var itemToAdd = _mapper.Map<TEntity>(item);
-                List<string?> validationResults = [.. await _repository.CheckValidate(itemToAdd, cancellationToken),
-                    .. _repository.CheckValidateCollection(itemToAdd, itemsToAdd)];
+                Exception exception = default!;
+                itemsresult.IfFail(ex => exception = ex);
+                return new Result<Unit>(exception);
+            }
+            List<TFileModel> items = [];
+            itemsresult.IfSucc(succ => items = succ);
+            var itemsToAdd = new List<TEntity>();
+            var result = ListValidator.Validate(items);
+            if (result.IsFaulted)
+            {
+                return result;
+            }
+            for (int i = 0; i < items.Count; i++)
+            {
+                var itemToAdd = _mapper.Map<TEntity>(items[i]);
+                List<string?> validationResults = [.. await _repository.Validate(itemToAdd, cancellationToken),
+                    .. _repository.ValidateCollection(itemToAdd, itemsToAdd)];
                 if (validationResults != null)
                 {
-                    if (validationResults.Count > 0)
+                    if (!validationResults.IsNullOrEmpty())
                     {
-                        throw new DataException(validationResults, $"Ошибка на строке {items.FindIndex(x => x == item) + 1}");
+                        return new Result<Unit>(new DataException(validationResults, $"Ошибка на строке {i + 1}"));
                     }
                 }
                 itemsToAdd.Add(itemToAdd);
             }
             await _repository.AddRange(itemsToAdd, cancellationToken);
+            return Unit.Default;
         }
     }
 }
