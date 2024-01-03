@@ -16,7 +16,6 @@ using Productivity.API.Services.Messaging.Base.Interfaces;
 using Productivity.API.Services.Messaging.Base;
 using Productivity.API.Services.Middleware;
 using Productivity.API.Services.Stats;
-using Productivity.API.Services.Stats.Base;
 using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Utility.AutoMapper;
 using Swashbuckle.AspNetCore.Filters;
@@ -24,6 +23,7 @@ using System.Text;
 using Productivity.API.Services.Messaging.Interfaces;
 using Productivity.API.Services.Messaging;
 using Microsoft.Extensions.Configuration;
+using Productivity.API.Services.Stats.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,6 +100,10 @@ builder.Services.AddScoped<IProductivityFileService,
 
 builder.Services.AddScoped<IProductivityStatsService,
     ProductivityStatsService>();
+builder.Services.AddScoped<ICultureStatsService,
+    CultureStatsService>();
+builder.Services.AddScoped<IRegionStatsService,
+    RegionStatsService>();
 
 builder.Services.AddScoped<ICultureReportMessagingService,
     CultureReportMessagingService>();

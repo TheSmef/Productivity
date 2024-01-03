@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LanguageExt.ClassInstances;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Productivity.API.Services.Authentication.Base;
 using Productivity.Shared.Models.DTO.PostModels.AccountModels;
+using Productivity.Shared.Models.Utility.ErrorModels;
+using Productivity.Shared.Utility.Exceptions.Handlers;
 
 namespace Productivity.API.Controllers.AuthControllers
 {
@@ -18,6 +22,9 @@ namespace Productivity.API.Controllers.AuthControllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<string>> SignIn(AuthDTO model, 
             CancellationToken cancellationToken)
         {
@@ -30,6 +37,9 @@ namespace Productivity.API.Controllers.AuthControllers
         }
 
         [HttpPut]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<string>> GetJWT([FromBody] string token, 
             CancellationToken cancellationToken)
         {
@@ -43,11 +53,21 @@ namespace Productivity.API.Controllers.AuthControllers
 
         [HttpDelete]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> SignOut(string token,
             CancellationToken cancellationToken)
         {
-            await _service.SignOut(token, cancellationToken);
-            return Ok();
+            var result = await _service.SignOut(token, cancellationToken);
+            return result.Match<ActionResult>(succ =>
+            {
+                return Ok();
+            },
+            err =>
+            {
+                return BadRequest(ExceptionMapper.Map(err));
+            });
         }
     }
 }

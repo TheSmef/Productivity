@@ -9,6 +9,7 @@ using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels;
 using Productivity.Shared.Models.DTO.PostModels.DataModels;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Models.Utility.ErrorModels;
 
 namespace Productivity.API.Controllers.DataControllers
 {
@@ -18,7 +19,9 @@ namespace Productivity.API.Controllers.DataControllers
     public class CultureController : BaseController<Culture, CultureDTO, CulturePostDTO>
     {
         public CultureController(ICultureService service) : base(service) { }
+
         [AllowAnonymous]
+        [ProducesResponseType(typeof(CollectionDTO<CultureDTO>), StatusCodes.Status200OK)]
         public async override Task<ActionResult<CollectionDTO<CultureDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
@@ -26,9 +29,28 @@ namespace Productivity.API.Controllers.DataControllers
         }
 
         [AllowAnonymous]
-        public override Task<ActionResult<CultureDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(CultureDTO), StatusCodes.Status200OK)]
+        public async override Task<ActionResult<CultureDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
         {
-            return base.GetItem(Id, cancellationToken);
+            return await base.GetItem(Id, cancellationToken);
+        }
+
+        [ProducesResponseType(typeof(CultureDTO), StatusCodes.Status200OK)]
+        public async override Task<ActionResult<CultureDTO>> PostItem(CulturePostDTO record, CancellationToken cancellationToken)
+        {
+            return await base.PostItem(record, cancellationToken);
+        }
+
+        [ProducesResponseType(typeof(CultureDTO), StatusCodes.Status200OK)]
+        public async override Task<ActionResult<CultureDTO>> PutItem(Guid Id, CulturePostDTO record, CancellationToken cancellationToken)
+        {
+            return await base.PutItem(Id, record, cancellationToken);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async override Task<ActionResult> DeleteItem(Guid Id, CancellationToken cancellationToken)
+        {
+            return await base.DeleteItem(Id, cancellationToken);
         }
     }
 }

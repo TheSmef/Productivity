@@ -17,16 +17,37 @@ namespace Productivity.API.Controllers.DataControllers
     public class ProductivityController : BaseController<Shared.Models.Entity.Productivity, ProductivityDTO, ProductivityPostDTO>
     {
         public ProductivityController(IProductivityService service) : base(service) { }
+
         [AllowAnonymous]
+        [ProducesResponseType(typeof(CollectionDTO<AccountDTO>), StatusCodes.Status200OK)]
         public async override Task<ActionResult<CollectionDTO<ProductivityDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
             return await base.GetItems(specification, cancellationToken);
         }
         [AllowAnonymous]
-        public override Task<ActionResult<ProductivityDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ProductivityDTO), StatusCodes.Status200OK)]
+        public async override Task<ActionResult<ProductivityDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
         {
-            return base.GetItem(Id, cancellationToken);
+            return await base.GetItem(Id, cancellationToken);
+        }
+
+        [ProducesResponseType(typeof(ProductivityDTO), StatusCodes.Status200OK)]
+        public async override Task<ActionResult<ProductivityDTO>> PostItem(ProductivityPostDTO record, CancellationToken cancellationToken)
+        {
+            return await base.PostItem(record, cancellationToken);
+        }
+
+        [ProducesResponseType(typeof(ProductivityDTO), StatusCodes.Status200OK)]
+        public async override Task<ActionResult<ProductivityDTO>> PutItem(Guid Id, ProductivityPostDTO record, CancellationToken cancellationToken)
+        {
+            return await base.PutItem(Id, record, cancellationToken);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async override Task<ActionResult> DeleteItem(Guid Id, CancellationToken cancellationToken)
+        {
+            return await base.DeleteItem(Id, cancellationToken);
         }
     }
 }

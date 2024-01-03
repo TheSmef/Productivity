@@ -7,6 +7,7 @@ using Productivity.API.Services.ExportServices.Interfaces;
 using Productivity.Shared.Models.DTO.File;
 using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Models.Utility.ErrorModels;
 using Productivity.Shared.Utility.Exceptions.Handlers;
 
 namespace Productivity.API.Controllers.FileControllers.Base
@@ -22,6 +23,9 @@ namespace Productivity.API.Controllers.FileControllers.Base
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(FileModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<FileModel>> Export([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
@@ -39,6 +43,9 @@ namespace Productivity.API.Controllers.FileControllers.Base
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Import(byte[] bytes, CancellationToken cancellationToken)
         {
             var result = await _service.ImportItems(bytes, cancellationToken);

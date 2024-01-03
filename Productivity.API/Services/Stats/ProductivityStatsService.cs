@@ -4,7 +4,7 @@ using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
-using Productivity.API.Services.Stats.Base;
+using Productivity.API.Services.Stats.Interfaces;
 using Productivity.Shared.Models.DTO.GetModels.CollectionModels;
 using Productivity.Shared.Models.DTO.GetModels.StatsModels.SingleModels;
 using Productivity.Shared.Models.Entity;
@@ -16,31 +16,16 @@ namespace Productivity.API.Services.Stats
 {
     public class ProductivityStatsService : IProductivityStatsService
     {
-        private readonly IProductivityRepository _productivityRepository;
-        private readonly IRegionRepository _regionRepository;
-        private readonly IMapper _mapper;
+        private readonly IRegionRepository _repository;
 
-        public ProductivityStatsService(IRegionRepository regionRepository,
-            IProductivityRepository productivityRepository,
-            IMapper mapper)
+        public ProductivityStatsService(IRegionRepository repository)
         {
-            _regionRepository = regionRepository;
-            _productivityRepository = productivityRepository;
-            _mapper = mapper;
+            _repository = repository;
         }
 
-        public async Task<Result<CollectionDTO<RegionStatsModel>>> GetCultureStats(StatsDistinctQuery query, CancellationToken cancellationToken)
+        public async Task<Result<CollectionDTO<ProductivityStatsModel>>> GetStats(StatsQuery query, CancellationToken cancellationToken)
         {
-            var items = _mapper.ProjectTo<RegionStatsModel>(_productivityRepository
-                .GetItems(cancellationToken, x => x.Year == query.Year && x.Culture.Id == query.Id).AsNoTracking());
-            var result = await ResponceModelBuilder.Build(query.Top,
-                query.Skip, items, cancellationToken);
-            return result;
-        }
-
-        public async Task<Result<CollectionDTO<ProductivityStatsModel>>> GetProductivityStats(StatsQuery query, CancellationToken cancellationToken)
-        {
-            var items = _regionRepository.GetItems(cancellationToken).AsNoTracking()
+            var items = _repository.GetItems(cancellationToken).AsNoTracking()
                 .Select(x => new ProductivityStatsModel()
                 {
                     Region = x.Name,
@@ -53,14 +38,5 @@ namespace Productivity.API.Services.Stats
             return result;
         }
 
-
-        public async Task<Result<CollectionDTO<CultureStatsModel>>> GetRegionStats(StatsDistinctQuery query, CancellationToken cancellationToken)
-        {
-            var items = _mapper.ProjectTo<CultureStatsModel>(_productivityRepository
-                .GetItems(cancellationToken, x => x.Year == query.Year && x.Region.Id == query.Id).AsNoTracking());
-            var result = await ResponceModelBuilder.Build(query.Top,
-                query.Skip, items, cancellationToken);
-            return result;
-        }
     }
 }
