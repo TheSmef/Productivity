@@ -12,8 +12,6 @@ using Productivity.API.Services.Data;
 using Productivity.API.Services.Data.Interfaces;
 using Productivity.API.Services.ExportServices;
 using Productivity.API.Services.ExportServices.Interfaces;
-using Productivity.API.Services.Messaging.Base.Interfaces;
-using Productivity.API.Services.Messaging.Base;
 using Productivity.API.Services.Middleware;
 using Productivity.API.Services.Stats;
 using Productivity.Shared.Models.Utility;
@@ -24,6 +22,8 @@ using Productivity.API.Services.Messaging.Interfaces;
 using Productivity.API.Services.Messaging;
 using Microsoft.Extensions.Configuration;
 using Productivity.API.Services.Stats.Interfaces;
+using Productivity.Shared.Services.Interfaces;
+using Productivity.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

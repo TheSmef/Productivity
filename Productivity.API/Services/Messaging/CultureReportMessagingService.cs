@@ -3,7 +3,6 @@ using Productivity.API.Services.Messaging.Interfaces;
 using Productivity.Shared.Models.DTO.BrokerModels;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client;
-using Productivity.API.Services.Messaging.Base.Interfaces;
 using System.Text;
 using System.Text.Json;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -11,6 +10,7 @@ using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.Constants;
 using LanguageExt.Common;
 using LanguageExt;
+using Productivity.Shared.Services.Interfaces;
 
 namespace Productivity.API.Services.Messaging
 {

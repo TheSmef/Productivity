@@ -103,6 +103,7 @@ namespace Productivity.API.Controllers.DataControllers.Base
         }
 
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public virtual async Task<ActionResult> DeleteItem(Guid Id,

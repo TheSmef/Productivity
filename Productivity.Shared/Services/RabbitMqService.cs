@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Options;
-using Productivity.API.Services.Messaging.Base.Interfaces;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Services.Interfaces;
 using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
 using RabbitMQ.Client;
 
-namespace Productivity.API.Services.Messaging.Base
+namespace Productivity.Shared.Services
 {
     public class RabbitMqService : IRabbitMqService
     {

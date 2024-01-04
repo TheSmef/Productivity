@@ -1,11 +1,10 @@
-﻿using Productivity.API.Services.Messaging.Base.Interfaces;
-using Productivity.Shared.Models.DTO.BrokerModels;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using System.Text.Json;
 using System.Text;
 using Productivity.Shared.Models.DTO.BrokerModels.Base;
 using LanguageExt.Common;
 using LanguageExt;
+using Productivity.Shared.Services.Interfaces;
 
 namespace Productivity.API.Services.Messaging.Base
 {

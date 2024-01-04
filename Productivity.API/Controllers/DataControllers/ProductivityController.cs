@@ -43,11 +43,5 @@ namespace Productivity.API.Controllers.DataControllers
         {
             return await base.PutItem(Id, record, cancellationToken);
         }
-
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async override Task<ActionResult> DeleteItem(Guid Id, CancellationToken cancellationToken)
-        {
-            return await base.DeleteItem(Id, cancellationToken);
-        }
     }
 }

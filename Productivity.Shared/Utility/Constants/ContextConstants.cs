@@ -39,7 +39,7 @@
         public const string ValidationErrorTitle = "Ошибка валидации";
 
 
-
+        public const string MailQueue = "MailQueue";
 
         public const string ProductivityQueue = "ProductivityQueue";
         public const string ReportExchange = "ReportExchange";

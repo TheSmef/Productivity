@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Productivity.Shared.Models.DTO.BrokerModels.SendModels;
+using Productivity.Shared.Models.DTO.BrokerModels.SendModels.Base;
 using Productivity.Shared.Models.DTO.File.ExportModels;
 using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels;
 using Productivity.Shared.Models.DTO.GetModels.StatsModels.SingleModels;
@@ -29,6 +31,12 @@ namespace Productivity.Shared.Utility.AutoMapper
             CreateMap<Culture, CultureDTO>();
 
             CreateMap<AccountPostDTO, Account>();
+
+
+            CreateMap<MailModel, Mail>();
+            CreateMap<BaseMailModel, Mail>();
+
+
             CreateMap<AccountPatchDTO, Account>();
             CreateMap<CulturePostDTO, Culture>();
             CreateMap<RegionPostDTO, Region>();

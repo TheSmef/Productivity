@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Productivity.API.Controllers.StatsControllers.Base;
 using Productivity.API.Services.Stats.Interfaces;
 using Productivity.Shared.Models.DTO.GetModels.CollectionModels;
 using Productivity.Shared.Models.DTO.GetModels.StatsModels.SingleModels;
@@ -10,34 +11,14 @@ namespace Productivity.API.Controllers.StatsControllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class CultureStatsController : ControllerBase
+    public class CultureStatsController : BaseStatsController<StatsDistinctQuery, RegionStatsModel>
     {
-        private readonly ICultureStatsService _service;
+        public CultureStatsController(ICultureStatsService service) : base(service) { }
 
-        public CultureStatsController(ICultureStatsService service)
-        {
-            _service = service;
-        }
-
-
-        [HttpGet]
         [ProducesResponseType(typeof(CollectionDTO<RegionStatsModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CollectionDTO<RegionStatsModel>>> GetStats([FromQuery] StatsDistinctQuery query,
-            CancellationToken cancellationToken)
+        public override Task<ActionResult<CollectionDTO<RegionStatsModel>>> GetStats([FromQuery] StatsDistinctQuery query, CancellationToken cancellationToken)
         {
-            var result = await _service.GetStats(query, cancellationToken);
-            return result.Match<ActionResult<CollectionDTO<RegionStatsModel>>>(
-                succ =>
-                {
-                    return Ok(succ);
-                },
-                err =>
-                {
-                    return BadRequest(ExceptionMapper.Map(err));
-                }
-                );
+            return base.GetStats(query, cancellationToken);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace Productivity.API.Services.Messaging.Base.Interfaces
+namespace Productivity.Shared.Services.Interfaces
 {
     public interface IRabbitMqService
     {
