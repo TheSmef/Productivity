@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Productivity.MailService.Data.Context;
 using Productivity.MailService.Services.Interfaces;
@@ -33,7 +33,6 @@ namespace Productivity.MailService.Services
             return _service.StartConsume(
                 (sender, args) =>
                 {
-                    _logger.LogInformation(Encoding.UTF8.GetString(args.Body.ToArray()));
                     var scope = _factory.CreateScope();
                     var service = scope.ServiceProvider.GetService<IMailService>()!;
                     return service.Send(Encoding.UTF8.GetString(args.Body.ToArray()), stoppingToken);

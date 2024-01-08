@@ -16,9 +16,9 @@ namespace Productivity.API.Controllers.StatsControllers
         public CultureStatsController(ICultureStatsService service) : base(service) { }
 
         [ProducesResponseType(typeof(CollectionDTO<RegionStatsModel>), StatusCodes.Status200OK)]
-        public override Task<ActionResult<CollectionDTO<RegionStatsModel>>> GetStats([FromQuery] StatsDistinctQuery query, CancellationToken cancellationToken)
+        public async override Task<ActionResult<CollectionDTO<RegionStatsModel>>> GetStats([FromQuery] StatsDistinctQuery query, CancellationToken cancellationToken)
         {
-            return base.GetStats(query, cancellationToken);
+            return await base.GetStats(query, cancellationToken);
         }
     }
 }

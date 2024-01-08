@@ -6,6 +6,7 @@ using Productivity.Shared.Models.DTO.BrokerModels.SendModels.Base;
 using Productivity.Shared.Models.Entity;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -31,7 +32,8 @@ namespace Productivity.MailService.Services.Base
             _service = service;
         }
 
-        public async Task Send(string record, CancellationToken cancellationToken)
+        public async Task Send([StringSyntax(StringSyntaxAttribute.Json)] string record,
+            CancellationToken cancellationToken)
         {
             try
             {
@@ -42,7 +44,7 @@ namespace Productivity.MailService.Services.Base
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred");
+                _logger.LogError(ex, "An error occurred: {message}", ex.Message);
             }
         }
     }

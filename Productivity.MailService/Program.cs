@@ -24,6 +24,8 @@ builder.Services.AddDbContextPool<DataContext>(options =>
 
 builder.Services.Configure<RabbitMqConfiguration>(a => builder.Configuration.GetSection(nameof(RabbitMqConfiguration)).Bind(a));
 
+builder.Services.Configure<SMTPConfiguration>(a => builder.Configuration.GetSection(nameof(SMTPConfiguration)).Bind(a));
+
 builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
 builder.Services.AddScoped<IMailRepository, MailRepository>();
