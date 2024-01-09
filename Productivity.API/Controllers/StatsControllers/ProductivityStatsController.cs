@@ -20,9 +20,9 @@ namespace Productivity.API.Controllers.StatsControllers
         public ProductivityStatsController(IProductivityStatsService service) : base(service) { }
 
         [ProducesResponseType(typeof(CollectionDTO<ProductivityStatsModel>), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<CollectionDTO<ProductivityStatsModel>>> GetStats([FromQuery] StatsQuery query, CancellationToken cancellationToken)
+        public override Task<ActionResult<CollectionDTO<ProductivityStatsModel>>> GetStats([FromQuery] StatsQuery query, CancellationToken cancellationToken)
         {
-            return await base.GetStats(query, cancellationToken);
+            return base.GetStats(query, cancellationToken);
         }
     }
 }

@@ -4,7 +4,8 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "productivity.api": "StartDebuging"
+        "productivity.api": "StartDebuging",
+        "productivity.mailservice": "StartDebugging"
       }
     }
   }

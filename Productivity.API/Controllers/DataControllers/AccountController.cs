@@ -42,28 +42,28 @@ namespace Productivity.API.Controllers.DataControllers
         }
 
         [ProducesResponseType(typeof(AccountDTO), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<AccountDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
+        public override Task<ActionResult<AccountDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
         {
-            return await base.GetItem(Id, cancellationToken);
+            return base.GetItem(Id, cancellationToken);
         }
 
         [ProducesResponseType(typeof(CollectionDTO<AccountDTO>), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<CollectionDTO<AccountDTO>>> GetItems([FromQuery] QuerySupporter specification,
+        public override Task<ActionResult<CollectionDTO<AccountDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
-            return await base.GetItems(specification, cancellationToken);
+            return base.GetItems(specification, cancellationToken);
         }
 
         [ProducesResponseType(typeof(AccountDTO), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<AccountDTO>> PostItem(AccountPostDTO record, CancellationToken cancellationToken)
+        public override Task<ActionResult<AccountDTO>> PostItem(AccountPostDTO record, CancellationToken cancellationToken)
         {
-            return await base.PostItem(record, cancellationToken);
+            return base.PostItem(record, cancellationToken);
         }
 
         [ProducesResponseType(typeof(AccountDTO), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<AccountDTO>> PutItem(Guid Id, AccountPostDTO record, CancellationToken cancellationToken)
+        public override Task<ActionResult<AccountDTO>> PutItem(Guid Id, AccountPostDTO record, CancellationToken cancellationToken)
         {
-            return await base.PutItem(Id, record, cancellationToken);
+            return base.PutItem(Id, record, cancellationToken);
         }
     }
 }

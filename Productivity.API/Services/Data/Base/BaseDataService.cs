@@ -55,10 +55,10 @@ namespace Productivity.API.Services.Data.Base
             return record;
         }
 
-        public virtual async Task<Result<CollectionDTO<TDTO>>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
+        public virtual Task<Result<CollectionDTO<TDTO>>> GetItems(QuerySupporter specification, CancellationToken cancellationToken)
         {
             var query = _mapper.ProjectTo<TDTO>(_repository.GetItems(cancellationToken).AsNoTracking());
-            return await ResponceModelBuilder.Build(specification, query, cancellationToken);
+            return ResponceModelBuilder.Build(specification, query, cancellationToken);
         }
 
         public async Task<Result<Unit>> RemoveItem(Guid Id, CancellationToken cancellationToken)

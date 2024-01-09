@@ -42,12 +42,12 @@ namespace Productivity.API.Data.Repositories.Base
 
         public abstract Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
 
-        public async Task<bool> Exists(Guid Id)
+        public Task<bool> Exists(Guid Id)
         {
-            return await _context.Set<TEntity>().AnyAsync(x => x.Id == Id);
+            return _context.Set<TEntity>().AnyAsync(x => x.Id == Id);
         }
 
-        public virtual async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken,
+        public virtual Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken,
             List<Expression<Func<TEntity, object>>> expressions)
         {
             var items = _context.Set<TEntity>().AsQueryable();
@@ -55,19 +55,18 @@ namespace Productivity.API.Data.Repositories.Base
             {
                 items = items.Include(expression);
             }
-            return await items
+            return items.FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
+        }
+
+        public virtual Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken)
+        {
+            return _context.Set<TEntity>()
                  .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
 
-        public virtual async Task<TEntity?> GetItem(Guid Id, CancellationToken cancellationToken)
+        public Task<TEntity?> GetItem(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
         {
-            return await _context.Set<TEntity>()
-                 .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
-        }
-
-        public async Task<TEntity?> GetItem(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
-        {
-            return await _context.Set<TEntity>()
+            return _context.Set<TEntity>()
                 .FirstOrDefaultAsync(expression, cancellationToken);
         }
 
@@ -105,9 +104,9 @@ namespace Productivity.API.Data.Repositories.Base
 
         public abstract Task<Result<LanguageExt.Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken);
 
-        public async Task<TEntity?> GetItemWithoutTracking(Guid Id, CancellationToken cancellationToken)
+        public Task<TEntity?> GetItemWithoutTracking(Guid Id, CancellationToken cancellationToken)
         {
-            return await _context.Set<TEntity>().AsNoTracking()
+            return _context.Set<TEntity>().AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
     }

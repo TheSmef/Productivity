@@ -22,29 +22,29 @@ namespace Productivity.API.Controllers.DataControllers
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(CollectionDTO<RegionDTO>), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<CollectionDTO<RegionDTO>>> GetItems([FromQuery] QuerySupporter specification,
+        public override Task<ActionResult<CollectionDTO<RegionDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
-            return await base.GetItems(specification, cancellationToken);
+            return base.GetItems(specification, cancellationToken);
         }
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(RegionDTO), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<RegionDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
+        public override Task<ActionResult<RegionDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
         {
-            return await base.GetItem(Id, cancellationToken);
+            return base.GetItem(Id, cancellationToken);
         }
 
         [ProducesResponseType(typeof(RegionDTO), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<RegionDTO>> PostItem(RegionPostDTO record, CancellationToken cancellationToken)
+        public override Task<ActionResult<RegionDTO>> PostItem(RegionPostDTO record, CancellationToken cancellationToken)
         {
-            return await base.PostItem(record, cancellationToken);
+            return base.PostItem(record, cancellationToken);
         }
 
         [ProducesResponseType(typeof(RegionDTO), StatusCodes.Status200OK)]
-        public async override Task<ActionResult<RegionDTO>> PutItem(Guid Id, RegionPostDTO record, CancellationToken cancellationToken)
+        public override Task<ActionResult<RegionDTO>> PutItem(Guid Id, RegionPostDTO record, CancellationToken cancellationToken)
         {
-            return await base.PutItem(Id, record, cancellationToken);
+            return base.PutItem(Id, record, cancellationToken);
         }
     }
 }

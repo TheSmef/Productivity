@@ -15,15 +15,12 @@ namespace Productivity.MailService.Services
 {
     public class MailWorker : BackgroundService
     {
-        private readonly ILogger<MailWorker> _logger;
         private readonly IMailQueueService _service;
         private readonly IServiceScopeFactory _factory;
 
-        public MailWorker(ILogger<MailWorker> logger, 
-            IMailQueueService service,             
+        public MailWorker(IMailQueueService service,             
             IServiceScopeFactory factory)
         {
-            _logger = logger;
             _service = service;
             _factory = factory;
         }

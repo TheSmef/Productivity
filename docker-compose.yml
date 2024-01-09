@@ -54,5 +54,19 @@ services:
     restart: unless-stopped
     networks:
       - base
+  productivity.mailservice:
+    container_name: productivity.mailservice
+    image: ${DOCKER_REGISTRY-}productivitymailservice
+    build:
+      context: .
+      dockerfile: Productivity.MailService/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+      - statistic_service
+    networks:
+      - base
+
 networks:
    base:
+
