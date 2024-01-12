@@ -53,10 +53,5 @@ namespace Productivity.API.Data.Repositories
             }
             return record;
         }
-
-        public override Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(new Result<Unit>(Unit.Default));
-        }
     }
 }

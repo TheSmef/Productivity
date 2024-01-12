@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using LanguageExt;
 using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
@@ -42,7 +43,7 @@ namespace Productivity.API.Data.Repositories.Base
 
         public abstract Task<TEntity> EnsureCreated(TEntity record, CancellationToken cancellationToken);
 
-        public Task<bool> Exists(Guid Id)
+        public virtual Task<bool> Exists(Guid Id)
         {
             return _context.Set<TEntity>().AnyAsync(x => x.Id == Id);
         }
@@ -64,7 +65,7 @@ namespace Productivity.API.Data.Repositories.Base
                  .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);
         }
 
-        public Task<TEntity?> GetItem(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
+        public virtual Task<TEntity?> GetItem(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken)
         {
             return _context.Set<TEntity>()
                 .FirstOrDefaultAsync(expression, cancellationToken);
@@ -102,9 +103,12 @@ namespace Productivity.API.Data.Repositories.Base
             return record;
         }
 
-        public abstract Task<Result<LanguageExt.Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken);
+        public virtual Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(new Result<Unit>(Unit.Default));
+        }
 
-        public Task<TEntity?> GetItemWithoutTracking(Guid Id, CancellationToken cancellationToken)
+        public virtual Task<TEntity?> GetItemWithoutTracking(Guid Id, CancellationToken cancellationToken)
         {
             return _context.Set<TEntity>().AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == Id, cancellationToken);

@@ -50,7 +50,7 @@ namespace Productivity.API.Data.Repositories
             return record;
         }
 
-        public override async Task<Result<LanguageExt.Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
+        public override async Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
         {
             if (await _context.Productivities.Where(x => x.Region.Id == id).AnyAsync(cancellationToken))
             {

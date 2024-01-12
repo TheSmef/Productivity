@@ -68,10 +68,5 @@ namespace Productivity.API.Data.Repositories
             return await _context.Tokens.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.TokenStr == token, cancellationToken);
         }
-
-        public override Task<Result<Unit>> CanBeDeleted(Guid id, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(new Result<Unit>(Unit.Default));
-        }
     }
 }
