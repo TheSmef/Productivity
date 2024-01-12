@@ -52,9 +52,9 @@ namespace Productivity.API.Services.FileServices.Base
             return new FileModel() { Data = file, Name = $"{_worksheet}_{DateTime.Today.ToShortDateString()}" };
         }
 
-        public virtual async Task<Result<Unit>> ImportItems(byte[] bytes, CancellationToken cancellationToken)
+        public virtual async Task<Result<Unit>> ImportItems(Stream stream, CancellationToken cancellationToken)
         {
-            var itemsresult = ExcelExporter.GetImportModel<TFileModel>(bytes, _worksheet);
+            var itemsresult = ExcelExporter.GetImportModel<TFileModel>(stream, _worksheet);
             if (itemsresult.IsFaulted)
             {
                 Exception exception = default!;

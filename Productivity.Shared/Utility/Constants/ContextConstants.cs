@@ -2,6 +2,8 @@
 {
     public static class ContextConstants
     {
+        public const string ExcelContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
         public const string ProductivityUNIndex = "UN_Productivity";
         public const string AccountEmailUNIndex = "UN_Email_Account";
         public const string AccountLoginUNIndex = "UN_Login_Account";

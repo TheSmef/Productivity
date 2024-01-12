@@ -8,7 +8,7 @@ namespace Productivity.Shared.Models.DTO.File
 {
     public class FileModel
     {
-        public string? Name { get; set; }
-        public byte[]? Data { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public byte[] Data { get; set; } = [];
     }
 }

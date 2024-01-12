@@ -8,6 +8,7 @@ using Productivity.Shared.Models.DTO.File;
 using Productivity.Shared.Models.Entity.Base;
 using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Models.Utility.ErrorModels;
+using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions.Handlers;
 
 namespace Productivity.API.Controllers.FileControllers.Base
@@ -23,17 +24,17 @@ namespace Productivity.API.Controllers.FileControllers.Base
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(FileModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<FileModel>> Export([FromQuery] QuerySupporter specification,
+        public async Task<ActionResult> Export([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
             var result = await _service.ExportItems(specification, cancellationToken);
-            return result.Match<ActionResult<FileModel>>(
+            return result.Match<ActionResult>(
                 succ =>
                 {
-                    return Ok(succ);
+                    return File(succ.Data, ContextConstants.ExcelContentType, succ.Name);
                 },
                 err =>
                 {
@@ -46,9 +47,9 @@ namespace Productivity.API.Controllers.FileControllers.Base
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Import(byte[] bytes, CancellationToken cancellationToken)
+        public async Task<ActionResult> Import(IFormFile file, CancellationToken cancellationToken)
         {
-            var result = await _service.ImportItems(bytes, cancellationToken);
+            var result = await _service.ImportItems(file.OpenReadStream(), cancellationToken);
             return result.Match<ActionResult>(
                 succ =>
                 {

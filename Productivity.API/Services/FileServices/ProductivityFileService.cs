@@ -33,9 +33,9 @@ namespace Productivity.API.Services.ExportServices
             _regionRepository = regionRepository;
         }
 
-        public override async Task<Result<Unit>> ImportItems(byte[] bytes, CancellationToken cancellationToken)
+        public override async Task<Result<Unit>> ImportItems(Stream stream, CancellationToken cancellationToken)
         {
-            var itemsresult = ExcelExporter.GetImportModel<ProductivityFileModel>(bytes, _worksheet);
+            var itemsresult = ExcelExporter.GetImportModel<ProductivityFileModel>(stream, _worksheet);
             if (itemsresult.IsFaulted)
             {
                 Exception exception = default!;

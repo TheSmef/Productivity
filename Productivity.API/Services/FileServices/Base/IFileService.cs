@@ -9,7 +9,7 @@ namespace Productivity.API.Services.ExportServices.Base
     public interface IFileService<TEntity, TExportModel>
         where TEntity : BaseEntity
     {
-        public Task<Result<Unit>> ImportItems(byte[] bytes, CancellationToken cancellationToken);
+        public Task<Result<Unit>> ImportItems(Stream stream, CancellationToken cancellationToken);
         public Task<Result<FileModel>> ExportItems(QuerySupporter specification, CancellationToken cancellationToken);
     }
 }
