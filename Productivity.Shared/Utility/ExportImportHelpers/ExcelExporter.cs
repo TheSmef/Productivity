@@ -61,10 +61,11 @@ namespace Productivity.Shared.Utility.ExportImportHelpers
 
                 return items;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (ex is FileFormatException || ex is NotImplementedException
-                    || ex is InvalidOperationException || ex is OpenXmlPackageException)
+                    || ex is InvalidOperationException || ex is OpenXmlPackageException
+                    || ex is ArgumentException)
                     return new Result<List<T>>(new DataException(ContextConstants.ParseErrorFile, ex));
                 else
                     throw;
