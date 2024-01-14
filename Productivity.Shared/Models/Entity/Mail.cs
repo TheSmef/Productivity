@@ -19,7 +19,7 @@ namespace Productivity.Shared.Models.Entity
         [StringLength(int.MaxValue)]
         public string Body { get; set; } = string.Empty;
         [Required]
-        public DateTime DateTime { get; private set; } = DateTime.Now;
+        public DateTime DateTime { get; private set; } = DateTime.UtcNow;
         [Required]
         public MailType Type { get; set; } = MailType.Email;
     }

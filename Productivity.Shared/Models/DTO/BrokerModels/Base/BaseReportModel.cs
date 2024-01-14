@@ -13,5 +13,6 @@ namespace Productivity.Shared.Models.DTO.BrokerModels.Base
         [RegularExpression("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", ErrorMessage = "Неправильный формат электронной почты!")]
         [MaxLength(255, ErrorMessage = "Электронная почта не может быть более 255 символов!")]
         public string Email { get; set; } = string.Empty;
+        public DateTime DateTime { get; private set; } = DateTime.UtcNow;
     }
 }
