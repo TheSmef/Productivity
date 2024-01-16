@@ -11,18 +11,20 @@ namespace Productivity.API.Services.Messaging.Base
     public class MessageService<T> : IMessagingService<T>
         where T : BaseReportModel
     {
-        private readonly IModel _model;
-        private readonly IConnection _connection;
+        private readonly IRabbitMqService _service;
         private readonly string _exchange;
         private readonly string _routingKey;
         public MessageService(IRabbitMqService service, string queue, string exchange,
             string routingKey, string exchangeType)
         {
-            _connection = service.CreateChannel();
-            _model = _connection.CreateModel();
-            _model.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
-            _model.ExchangeDeclare(exchange, exchangeType, durable: true, autoDelete: false);
-            _model.QueueBind(queue, exchange, routingKey);
+            _service = service;
+            using (var connection = _service.CreateChannel())
+            using (var model = connection.CreateModel())
+            {
+                model.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
+                model.ExchangeDeclare(exchange, exchangeType, durable: true, autoDelete: false);
+                model.QueueBind(queue, exchange, routingKey);
+            }
             _routingKey = routingKey;
             _exchange = exchange;
         }
@@ -31,10 +33,14 @@ namespace Productivity.API.Services.Messaging.Base
         public virtual Task<Result<Unit>> SendRequest(T request, CancellationToken cancellationToken)
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request));
-            _model.BasicPublish(_exchange,
+            using (var connection = _service.CreateChannel())
+            using (var model = connection.CreateModel())
+            {
+                model.BasicPublish(_exchange,
                                  _routingKey,
                                  basicProperties: null,
                                  body: body);
+            }
             return Task.FromResult(new Result<Unit>(Unit.Default));
         }
     }
