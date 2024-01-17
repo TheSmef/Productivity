@@ -14,19 +14,19 @@ namespace Productivity.Shared.Services
         {
             _configuration = options.Value;
         }
-        public IConnection CreateChannel()
+        public IConnection CreateConnection()
         {
             try
             {
-                ConnectionFactory connection = new ConnectionFactory()
+                ConnectionFactory factory = new ConnectionFactory()
                 {
                     UserName = _configuration.Username,
                     Password = _configuration.Password,
                     HostName = _configuration.HostName
                 };
-                connection.DispatchConsumersAsync = true;
-                var channel = connection.CreateConnection();
-                return channel;
+                factory.DispatchConsumersAsync = true;
+                var connection = factory.CreateConnection();
+                return connection;
             }
             catch (Exception ex)
             {

@@ -4,6 +4,6 @@ namespace Productivity.Shared.Services.Interfaces
 {
     public interface IRabbitMqService
     {
-        IConnection CreateChannel();
+        IConnection CreateConnection();
     }
 }

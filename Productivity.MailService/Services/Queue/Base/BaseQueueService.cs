@@ -21,7 +21,7 @@ namespace Productivity.MailService.Services.Queue.Base
         }
         public Task StartConsume(AsyncEventHandler<BasicDeliverEventArgs> handler)
         {
-            var channel = _service.CreateChannel().CreateModel();
+            var channel = _service.CreateConnection().CreateModel();
             channel.QueueDeclare(queue: _queueName,
                     durable: false,
                     exclusive: false,

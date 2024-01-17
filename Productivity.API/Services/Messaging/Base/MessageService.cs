@@ -18,7 +18,7 @@ namespace Productivity.API.Services.Messaging.Base
             string routingKey, string exchangeType)
         {
             _service = service;
-            using (var connection = _service.CreateChannel())
+            using (var connection = _service.CreateConnection())
             using (var model = connection.CreateModel())
             {
                 model.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false);
@@ -33,7 +33,7 @@ namespace Productivity.API.Services.Messaging.Base
         public virtual Task<Result<Unit>> SendRequest(T request, CancellationToken cancellationToken)
         {
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request));
-            using (var connection = _service.CreateChannel())
+            using (var connection = _service.CreateConnection())
             using (var model = connection.CreateModel())
             {
                 model.BasicPublish(_exchange,
