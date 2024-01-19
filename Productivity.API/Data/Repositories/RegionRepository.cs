@@ -54,7 +54,7 @@ namespace Productivity.API.Data.Repositories
         {
             if (await _context.Productivities.Where(x => x.Region.Id == id).AnyAsync(cancellationToken))
             {
-                return new Result<Unit>(new DataException(ContextConstants.CannotBeDeleted));
+                return new Result<Unit>(new DataException([ContextConstants.CannotBeDeleted], ContextConstants.CannotBeDeletedTitle));
             }
             return Unit.Default;
         }

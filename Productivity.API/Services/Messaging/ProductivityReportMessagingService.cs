@@ -1,5 +1,6 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
+using Microsoft.IdentityModel.Tokens;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
 using Productivity.API.Services.Messaging.Base;
@@ -31,13 +32,18 @@ namespace Productivity.API.Services.Messaging
 
         public override async Task<Result<Unit>> SendRequest(ProductivityReportModel request, CancellationToken cancellationToken)
         {
+            List<string?> errors = [];
             if (!await _regionRepository.Exists(request.RegionId))
             {
-                return new Result<Unit>(new QueryException(ContextConstants.RegionNotFound));
+                errors.Add(ContextConstants.RegionNotFound);
             }
             if (!await _cultureRepository.Exists(request.CultureId))
             {
-                return new Result<Unit>(new QueryException(ContextConstants.CultureNotFound));
+                errors.Add(ContextConstants.CultureNotFound);
+            }
+            if (!errors.IsNullOrEmpty())
+            {
+                return new Result<Unit>(new DataException(errors, ContextConstants.ValidationErrorTitle));
             }
             if (_productivityRepository.GetItems(cancellationToken, x => x.Culture.Id == request.CultureId && x.Region.Id == request.RegionId).Count() < 2)
             {

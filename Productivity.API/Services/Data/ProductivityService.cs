@@ -30,17 +30,9 @@ namespace Productivity.API.Services.Data
         {
             Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
             var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
-            if (culture == null)
-            {
-                return new Result<ProductivityDTO>(new QueryException(ContextConstants.CultureNotFound));
-            }
-            item.Culture = culture;
+            item.Culture = culture ?? new Culture();
             var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
-            if (region == null)
-            {
-                return new Result<ProductivityDTO>(new QueryException(ContextConstants.RegionNotFound));
-            }
-            item.Region = region;
+            item.Region = region ?? new Region();
             var result = await _repository.Validate(item, cancellationToken);
             if (!result.IsNullOrEmpty())
             {
@@ -66,18 +58,9 @@ namespace Productivity.API.Services.Data
         {
             Shared.Models.Entity.Productivity item = _mapper.Map<Shared.Models.Entity.Productivity>(record);
             var culture = await _cultureRepository.GetItem(item.Culture.Id, cancellationToken);
-            if (culture == null)
-            {
-                return new Result<ProductivityDTO>(new QueryException(ContextConstants.CultureNotFound));
-            }
-            item.Culture = culture;
+            item.Culture = culture ?? new Culture();
             var region = await _regionRepository.GetItem(item.Region.Id, cancellationToken);
-            if (region == null)
-            {
-                return new Result<ProductivityDTO>(new QueryException(ContextConstants.RegionNotFound));
-            }
-            item.Region = region;
-            item.Id = Id;
+            item.Region = region ?? new Region();
             var result = await _repository.Validate(item, cancellationToken);
             if (!result.IsNullOrEmpty())
             {

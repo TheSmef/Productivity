@@ -1,5 +1,6 @@
 ﻿using LanguageExt;
 using LanguageExt.Common;
+using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Productivity.Shared.Utility.Validators
             {
                 if (items[i] == null)
                 {
-                    return new Result<Unit>(new DataException($"Пустой элемент на строке {i + 1}"));
+                    return new Result<Unit>(new DataException([ ContextConstants.EmptyElement ], $"Ошибка на строке {i + 1}"));
                 }
                 ValidationContext validationContext
                         = new ValidationContext(items[i]);

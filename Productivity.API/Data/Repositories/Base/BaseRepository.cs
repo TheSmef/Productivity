@@ -96,7 +96,7 @@ namespace Productivity.API.Data.Repositories.Base
         {
             if (!_context.Set<TEntity>().Any(x => x.Id == record.Id))
             {
-                return new Result<TEntity>(new QueryException(ContextConstants.NotFoundError));
+                return new Result<TEntity>(new DataException([ ContextConstants.NotFoundError ], ContextConstants.NotFoundErrorTitle));
             }
             _context.Set<TEntity>().Update(record);
             await _context.SaveChangesAsync(cancellationToken);

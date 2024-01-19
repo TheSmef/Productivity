@@ -24,6 +24,8 @@ using Microsoft.Extensions.Configuration;
 using Productivity.API.Services.Stats.Interfaces;
 using Productivity.Shared.Services.Interfaces;
 using Productivity.Shared.Services;
+using Microsoft.AspNetCore.Mvc;
+using Productivity.Shared.Models.Utility.ErrorModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,11 @@ builder.Services.AddSwaggerGen(options => {
         Type = SecuritySchemeType.ApiKey
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(op =>
+{
+    op.InvalidModelStateResponseFactory = ErrorModel.GenerateErrorResponce;
 });
 
 builder.Services.AddAuthentication(

@@ -11,6 +11,8 @@ using Productivity.Shared.Utility.Exceptions;
 using Productivity.Shared.Utility.ModelHelpers;
 using System.Linq.Expressions;
 using System.Threading;
+using Microsoft.IdentityModel.Tokens;
+using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels;
 
 namespace Productivity.API.Data.Repositories
 {
@@ -21,6 +23,14 @@ namespace Productivity.API.Data.Repositories
         public override async Task<List<string?>> Validate(Shared.Models.Entity.Productivity record, CancellationToken cancellationToken)
         {
             List<string?> result = new();
+            if (!await _context.Cultures.Where(x => x.Id == record.Culture.Id).AnyAsync(cancellationToken))
+            {
+                result.Add(ContextConstants.CultureNotFound);
+            }
+            if (!await _context.Regions.Where(x => x.Id == record.Region.Id).AnyAsync(cancellationToken))
+            {
+                result.Add(ContextConstants.RegionNotFound);
+            }
             if (await _context.Productivities.AnyAsync(x => x.Culture == record.Culture
                 && x.Region == record.Region && x.Year == record.Year && x.Id != record.Id,
                 cancellationToken))

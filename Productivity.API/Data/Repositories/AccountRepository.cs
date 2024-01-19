@@ -74,5 +74,11 @@ namespace Productivity.API.Data.Repositories
             }
             return record;
         }
+
+        public override async Task<Result<Account>> UpdateItem(Account record, CancellationToken cancellationToken)
+        {
+            _context.Tokens.RemoveRange(_context.Tokens.Where(x => x.Account.Id == record.Id));
+            return await base.UpdateItem(record, cancellationToken);
+        }
     }
 }

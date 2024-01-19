@@ -11,6 +11,7 @@ using Productivity.Shared.Utility.Constants;
 using LanguageExt.Common;
 using LanguageExt;
 using Productivity.Shared.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Productivity.API.Services.Messaging
 {
@@ -28,7 +29,7 @@ namespace Productivity.API.Services.Messaging
         {
             if (!await _repository.Exists(request.RegionId))
             {
-                return new Result<Unit>(new QueryException(ContextConstants.RegionNotFound));
+                return new Result<Unit>(new DataException([ ContextConstants.RegionNotFound ], ContextConstants.ValidationErrorTitle));
             }
             return await base.SendRequest(request, cancellationToken);
         }
