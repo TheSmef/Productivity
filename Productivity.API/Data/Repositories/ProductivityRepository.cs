@@ -63,5 +63,17 @@ namespace Productivity.API.Data.Repositories
             }
             return record;
         }
+
+        public async Task<List<string?>> ValidateWithoutParents(Shared.Models.Entity.Productivity record, CancellationToken cancellationToken)
+        {
+            List<string?> result = new();
+            if (await _context.Productivities.AnyAsync(x => x.Culture == record.Culture
+                && x.Region == record.Region && x.Year == record.Year && x.Id != record.Id,
+                cancellationToken))
+            {
+                result.Add(ContextConstants.ProductivityUNError);
+            }
+            return result;
+        }
     }
 }

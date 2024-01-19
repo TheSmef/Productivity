@@ -61,7 +61,8 @@ namespace Productivity.API.Services.ExportServices
                 var itemToAdd = _mapper.Map<Shared.Models.Entity.Productivity>(items[i]);
                 itemToAdd.Region = regions.First(x => x.Name.Equals(itemToAdd.Region.Name, StringComparison.CurrentCultureIgnoreCase));
                 itemToAdd.Culture = cultures.First(x => x.Name.Equals(itemToAdd.Culture.Name, StringComparison.CurrentCultureIgnoreCase));
-                List<string?> validationResults = [.. await _repository.Validate(itemToAdd, cancellationToken),
+                List<string?> validationResults = [.. await (_repository as IProductivityRepository)!
+                    .ValidateWithoutParents(itemToAdd, cancellationToken),
                     .. _repository.ValidateCollection(itemToAdd, itemsToAdd)];
                 if (validationResults != null)
                 {
