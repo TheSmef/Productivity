@@ -23,7 +23,7 @@ namespace Productivity.MailService.Services.Queue.Base
         {
             var channel = _service.CreateConnection().CreateModel();
             channel.QueueDeclare(queue: _queueName,
-                    durable: false,
+                    durable: true,
                     exclusive: false,
                     autoDelete: false,
                     arguments: null);
