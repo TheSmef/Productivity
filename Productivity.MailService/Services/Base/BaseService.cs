@@ -4,6 +4,7 @@ using Productivity.MailService.Services.Sender.Base;
 using Productivity.MailService.Services.Sender.Interfaces;
 using Productivity.Shared.Models.DTO.BrokerModels.SendModels.Base;
 using Productivity.Shared.Models.Entity;
+using Productivity.Shared.Utility.Constants;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -37,7 +38,7 @@ namespace Productivity.MailService.Services.Base
         {
             try
             {
-                var item = _mapper.Map<Mail>(JsonSerializer.Deserialize<T>(record)!);
+                var item = _mapper.Map<Mail>(JsonSerializer.Deserialize<T>(record, JsonSerializerOptionsPreset.Options)!);
                 item.Type = _type;
                 await _service.Send(item);
                 await _repository.AddItem(item, cancellationToken);
