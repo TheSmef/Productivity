@@ -16,7 +16,7 @@ namespace Productivity.API.Controllers.DataControllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class RegionController : BaseController<Region, RegionDTO, RegionPostDTO>
+    public class RegionController : BaseController<RegionDTO, RegionPostDTO>
     {
         public RegionController(IRegionService repository) : base(repository) { }
 

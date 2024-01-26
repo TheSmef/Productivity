@@ -14,7 +14,7 @@ namespace Productivity.API.Controllers.DataControllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class ProductivityController : BaseController<Shared.Models.Entity.Productivity, ProductivityDTO, ProductivityPostDTO>
+    public class ProductivityController : BaseController<ProductivityDTO, ProductivityPostDTO>
     {
         public ProductivityController(IProductivityService service) : base(service) { }
 

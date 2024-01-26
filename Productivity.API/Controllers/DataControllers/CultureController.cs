@@ -16,7 +16,7 @@ namespace Productivity.API.Controllers.DataControllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class CultureController : BaseController<Culture, CultureDTO, CulturePostDTO>
+    public class CultureController : BaseController<CultureDTO, CulturePostDTO>
     {
         public CultureController(ICultureService service) : base(service) { }
 

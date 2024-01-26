@@ -17,7 +17,7 @@ namespace Productivity.API.Controllers.DataControllers
     [Route("[controller]")]
     [ApiController]
     [Authorize]
-    public class AccountController : BaseController<Account, AccountDTO, AccountPostDTO>
+    public class AccountController : BaseController<AccountDTO, AccountPostDTO>
     {
         public AccountController(IAccountService service) : base(service) { }
 

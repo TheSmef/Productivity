@@ -19,8 +19,7 @@ using Productivity.Shared.Utility.Exceptions.Handlers;
 
 namespace Productivity.API.Controllers.DataControllers.Base
 {
-    public abstract class BaseController<TEntity, TDTO, TPostDTO> : ControllerBase
-        where TEntity : BaseEntity
+    public abstract class BaseController<TDTO, TPostDTO> : ControllerBase
         where TDTO : BaseDTO
     {
         protected readonly IBaseDataService<TDTO, TPostDTO> _service;
