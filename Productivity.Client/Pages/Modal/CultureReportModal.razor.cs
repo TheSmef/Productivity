@@ -19,7 +19,7 @@ namespace Productivity.Client.Pages.Modal
         [Inject]
         private NotificationService? NotificationService { get; set; }
 
-        private static List<int> years = [DateTime.Today.Year + 1, DateTime.Today.Year + 2];
+        private static List<int> years = [DateTime.Today.Year, DateTime.Today.Year + 1];
 
 
         [Inject]

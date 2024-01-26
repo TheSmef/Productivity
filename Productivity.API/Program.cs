@@ -26,6 +26,7 @@ using Productivity.Shared.Services.Interfaces;
 using Productivity.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
 using Productivity.Shared.Models.Utility.ErrorModels;
+using Productivity.API.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,7 +61,7 @@ builder.Services.AddSwaggerGen(options => {
 
 builder.Services.Configure<ApiBehaviorOptions>(op =>
 {
-    op.InvalidModelStateResponseFactory = ErrorModel.GenerateErrorResponce;
+    op.InvalidModelStateResponseFactory = ErrorResponceHandler.GenerateErrorResponce;
 });
 
 builder.Services.AddAuthentication(
