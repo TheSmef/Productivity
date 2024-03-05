@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Controllers.DataControllers.Base;
 using Productivity.API.Services.Data.Base;
 using Productivity.API.Services.Data.Interfaces;
@@ -10,6 +11,7 @@ using Productivity.Shared.Models.DTO.PostModels.DataModels;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Models.Utility;
 using Productivity.Shared.Models.Utility.ErrorModels;
+using Productivity.Shared.Utility.Constants;
 using Productivity.Shared.Utility.Exceptions.Handlers;
 
 namespace Productivity.API.Controllers.DataControllers
@@ -19,7 +21,8 @@ namespace Productivity.API.Controllers.DataControllers
     [Authorize]
     public class AccountController : BaseController<AccountDTO, AccountPostDTO>
     {
-        public AccountController(IAccountService service) : base(service) { }
+        public AccountController(IAccountService service) 
+            : base(service) { }
 
         [HttpPatch]
         [ProducesResponseType(typeof(AccountDTO), StatusCodes.Status200OK)]

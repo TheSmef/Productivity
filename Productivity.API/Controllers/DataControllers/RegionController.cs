@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Controllers.DataControllers.Base;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -10,6 +11,7 @@ using Productivity.Shared.Models.DTO.GetModels.SignleEntityModels;
 using Productivity.Shared.Models.DTO.PostModels.DataModels;
 using Productivity.Shared.Models.Entity;
 using Productivity.Shared.Models.Utility;
+using Productivity.Shared.Utility.Constants;
 
 namespace Productivity.API.Controllers.DataControllers
 {
@@ -18,10 +20,12 @@ namespace Productivity.API.Controllers.DataControllers
     [Authorize]
     public class RegionController : BaseController<RegionDTO, RegionPostDTO>
     {
-        public RegionController(IRegionService repository) : base(repository) { }
+        public RegionController(IRegionService repository, IOutputCacheStore store) 
+            : base(repository, store, [ContextConstants.ProductivityCacheTag, ContextConstants.RegionCacheTag]) { }
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(CollectionDTO<RegionDTO>), StatusCodes.Status200OK)]
+        [OutputCache(Tags = [ContextConstants.RegionCacheTag])]
         public override Task<ActionResult<CollectionDTO<RegionDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
@@ -30,6 +34,7 @@ namespace Productivity.API.Controllers.DataControllers
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(RegionDTO), StatusCodes.Status200OK)]
+        [OutputCache(Tags = [ContextConstants.RegionCacheTag])]
         public override Task<ActionResult<RegionDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
         {
             return base.GetItem(Id, cancellationToken);
