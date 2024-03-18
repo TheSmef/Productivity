@@ -54,9 +54,5 @@
 
         public const string CultureQueue = "CultureQueue";
         public const string CultureRoutingKey = "culture";
-
-        public const string ProductivityCacheTag = "Productivity";
-        public const string CultureCacheTag = "Culture";
-        public const string RegionCacheTag = "Region";
     }
 }

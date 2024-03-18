@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Services.Authentication.Base;
 using Productivity.API.Services.Data.Base;
@@ -24,15 +23,10 @@ namespace Productivity.API.Controllers.DataControllers.Base
         where TDTO : BaseDTO
     {
         protected readonly IBaseDataService<TDTO, TPostDTO> _service;
-        protected readonly IOutputCacheStore? _store;
-        protected readonly List<string>? _evictingTags;
 
-        public BaseController(IBaseDataService<TDTO, TPostDTO> service,
-            IOutputCacheStore? store = null, List<string>? evictingTags = null)
+        public BaseController(IBaseDataService<TDTO, TPostDTO> service)
         {
             _service = service;
-            _evictingTags = evictingTags;
-            _store = store;
         }
 
         [HttpGet]
@@ -79,8 +73,6 @@ namespace Productivity.API.Controllers.DataControllers.Base
             return result.Match<ActionResult<TDTO>>(
                 succ =>
                 {
-                    if (_store != null)
-                        _evictingTags?.ForEach(async x => await _store.EvictByTagAsync(x, cancellationToken));
                     return Ok(succ);
                 },
                 err =>
@@ -100,8 +92,6 @@ namespace Productivity.API.Controllers.DataControllers.Base
             return result.Match<ActionResult<TDTO>>(
                 succ =>
                 {
-                    if (_store != null)
-                        _evictingTags?.ForEach(async x => await _store.EvictByTagAsync(x, cancellationToken));
                     return Ok(succ);
                 },
                 err =>
@@ -122,8 +112,6 @@ namespace Productivity.API.Controllers.DataControllers.Base
             return result.Match<ActionResult>(
                 succ =>
                 {
-                    if (_store != null)
-                        _evictingTags?.ForEach(async x => await _store.EvictByTagAsync(x, cancellationToken));
                     return Ok();
                 },
                 err =>

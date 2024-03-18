@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Controllers.StatsControllers.Base;
 using Productivity.API.Services.Stats.Interfaces;
 using Productivity.Shared.Models.DTO.GetModels.CollectionModels;
@@ -18,7 +17,6 @@ namespace Productivity.API.Controllers.StatsControllers
         public CultureStatsController(ICultureStatsService service) : base(service) { }
 
         [ProducesResponseType(typeof(CollectionDTO<RegionStatsModel>), StatusCodes.Status200OK)]
-        [OutputCache(Tags = [ContextConstants.ProductivityCacheTag])]
         public override Task<ActionResult<CollectionDTO<RegionStatsModel>>> GetStats([FromQuery] StatsDistinctQuery query, CancellationToken cancellationToken)
         {
             return base.GetStats(query, cancellationToken);

@@ -1,7 +1,6 @@
 ﻿using LanguageExt.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Services.Data.Base;
 using Productivity.API.Services.ExportServices.Base;
 using Productivity.API.Services.ExportServices.Interfaces;
@@ -21,15 +20,10 @@ namespace Productivity.API.Controllers.FileControllers.Base
         where TEntity : BaseEntity
     {
         protected readonly IFileService<TEntity, TFileModel> _service;
-        protected readonly IOutputCacheStore _store;
-        protected readonly List<string>? _evictingTags;
 
-        public BaseFileController(IFileService<TEntity, TFileModel> service, 
-            IOutputCacheStore store, List<string>? evictingTags = null)
+        public BaseFileController(IFileService<TEntity, TFileModel> service)
         {
             _service = service;
-            _store = store;
-            _evictingTags = evictingTags;
         }
 
         [HttpGet]
@@ -62,7 +56,6 @@ namespace Productivity.API.Controllers.FileControllers.Base
             return result.Match<ActionResult>(
                 succ =>
                 {
-                    _evictingTags?.ForEach(async x => await _store.EvictByTagAsync(x, cancellationToken));
                     return Ok();
                 },
                 err =>

@@ -83,11 +83,6 @@ builder.Services.AddAuthentication(
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
-builder.Services.AddOutputCache(op =>
-{
-    op.DefaultExpirationTimeSpan = TimeSpan.FromMinutes(8);
-});
-
 builder.Services.AddDbContextPool<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection"))
 );
@@ -142,7 +137,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseOutputCache();
 
 app.Run();

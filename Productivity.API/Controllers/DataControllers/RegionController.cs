@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Controllers.DataControllers.Base;
 using Productivity.API.Data.Repositories.Base;
 using Productivity.API.Data.Repositories.Interfaces;
@@ -20,12 +19,11 @@ namespace Productivity.API.Controllers.DataControllers
     [Authorize]
     public class RegionController : BaseController<RegionDTO, RegionPostDTO>
     {
-        public RegionController(IRegionService repository, IOutputCacheStore store) 
-            : base(repository, store, [ContextConstants.ProductivityCacheTag, ContextConstants.RegionCacheTag]) { }
+        public RegionController(IRegionService repository) 
+            : base(repository) { }
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(CollectionDTO<RegionDTO>), StatusCodes.Status200OK)]
-        [OutputCache(Tags = [ContextConstants.RegionCacheTag])]
         public override Task<ActionResult<CollectionDTO<RegionDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
@@ -34,7 +32,6 @@ namespace Productivity.API.Controllers.DataControllers
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(RegionDTO), StatusCodes.Status200OK)]
-        [OutputCache(Tags = [ContextConstants.RegionCacheTag])]
         public override Task<ActionResult<RegionDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
         {
             return base.GetItem(Id, cancellationToken);

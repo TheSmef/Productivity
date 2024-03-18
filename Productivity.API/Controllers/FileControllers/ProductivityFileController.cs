@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Controllers.FileControllers.Base;
 using Productivity.API.Services.ExportServices.Base;
 using Productivity.API.Services.ExportServices.Interfaces;
@@ -19,11 +18,9 @@ namespace Productivity.API.Controllers.FileControllers
     public class ProductivityFileController :
         BaseFileController<Shared.Models.Entity.Productivity, ProductivityFileModel>
     {
-        public ProductivityFileController(IProductivityFileService service, IOutputCacheStore store) 
-            : base(service, store, 
-                  [ContextConstants.RegionCacheTag, ContextConstants.CultureCacheTag, ContextConstants.ProductivityCacheTag]) { }
+        public ProductivityFileController(IProductivityFileService service) 
+            : base(service) { }
 
-        [OutputCache(Tags = [ContextConstants.ProductivityCacheTag])]
         public override Task<ActionResult> Export([FromQuery] QuerySupporter specification, CancellationToken cancellationToken)
         {
             return base.Export(specification, cancellationToken);

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 using Productivity.API.Controllers.DataControllers.Base;
 using Productivity.API.Services.Data.Base;
 using Productivity.API.Services.Data.Interfaces;
@@ -20,13 +19,11 @@ namespace Productivity.API.Controllers.DataControllers
     [Authorize]
     public class CultureController : BaseController<CultureDTO, CulturePostDTO>
     {
-        public CultureController(ICultureService service, IOutputCacheStore store)
-            : base(service, store, 
-                  [ContextConstants.CultureCacheTag, ContextConstants.ProductivityCacheTag]) { }
+        public CultureController(ICultureService service)
+            : base(service) { }
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(CollectionDTO<CultureDTO>), StatusCodes.Status200OK)]
-        [OutputCache(Tags = [ContextConstants.CultureCacheTag])]
         public override Task<ActionResult<CollectionDTO<CultureDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
@@ -35,7 +32,6 @@ namespace Productivity.API.Controllers.DataControllers
 
         [AllowAnonymous]
         [ProducesResponseType(typeof(CultureDTO), StatusCodes.Status200OK)]
-        [OutputCache(Tags = [ContextConstants.CultureCacheTag])]
         public override Task<ActionResult<CultureDTO>> GetItem(Guid Id, CancellationToken cancellationToken)
         {
             return base.GetItem(Id, cancellationToken);
