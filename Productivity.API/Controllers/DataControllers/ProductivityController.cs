@@ -19,7 +19,7 @@ namespace Productivity.API.Controllers.DataControllers
             : base(service) { }
 
         [AllowAnonymous]
-        [ProducesResponseType(typeof(CollectionDTO<AccountDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CollectionDTO<ProductivityDTO>), StatusCodes.Status200OK)]
         public override Task<ActionResult<CollectionDTO<ProductivityDTO>>> GetItems([FromQuery] QuerySupporter specification,
             CancellationToken cancellationToken)
         {
